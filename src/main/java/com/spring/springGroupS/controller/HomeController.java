@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 //@Slf4j
 @Controller
 public class HomeController {
-	
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 
 	@RequestMapping(value = {"/", "/h", "/index"}, method = RequestMethod.GET)

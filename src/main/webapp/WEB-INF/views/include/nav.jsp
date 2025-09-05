@@ -16,6 +16,7 @@
         <a href="${ctp}/study1/mapping/menu" class="w3-bar-item w3-button">Mapping</a>
         <a href="${ctp}/study1/aop/aopMenu" class="w3-bar-item w3-button">AOP Test</a>
         <a href="${ctp}/study1/xml/xmlMenu" class="w3-bar-item w3-button">XML 값 주입 Test</a>
+        <a href="${ctp}/user/userList" class="w3-bar-item w3-button">user 리스트</a>
         <a href="#" class="w3-bar-item w3-button">Ajax</a>
       </div>
     </div>
