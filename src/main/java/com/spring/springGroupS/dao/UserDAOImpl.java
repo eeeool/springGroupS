@@ -10,7 +10,7 @@ import com.spring.springGroupS.vo.UserVO;
 
 @Repository("userDAO")
 public class UserDAOImpl implements UserDAO {
-	
+
 	@Autowired
 	SqlSession sqlSession;
 
@@ -25,4 +25,5 @@ public class UserDAOImpl implements UserDAO {
 		UserVO vo = sqlSession.selectOne("userNS.getUserSearch", mid);
 		return vo;
 	}
+	
 }
