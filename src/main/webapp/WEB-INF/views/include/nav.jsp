@@ -7,7 +7,7 @@
   <div class="w3-bar w3-black w3-card">
     <a class="w3-bar-item w3-button w3-padding-large w3-hide-medium w3-hide-large w3-right" href="javascript:void(0)" onclick="myFunction()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
     <a href="http://192.168.50.59:9090/springGroupS/" class="w3-bar-item w3-button w3-padding-large">HOME</a>
-    <a href="#band" class="w3-bar-item w3-button w3-padding-large w3-hide-small">Guest</a>
+    <a href="${ctp}/guest/guestList" class="w3-bar-item w3-button w3-padding-large w3-hide-small">Guest</a>
     <a href="#tour" class="w3-bar-item w3-button w3-padding-large w3-hide-small">Board</a>
     <a href="#contact" class="w3-bar-item w3-button w3-padding-large w3-hide-small">PDS</a>
     <div class="w3-dropdown-hover w3-hide-small">
@@ -17,6 +17,7 @@
         <a href="${ctp}/study1/aop/aopMenu" class="w3-bar-item w3-button">AOP Test</a>
         <a href="${ctp}/study1/xml/xmlMenu" class="w3-bar-item w3-button">XML 값 주입 Test</a>
         <a href="${ctp}/user/userList" class="w3-bar-item w3-button">user 리스트</a>
+        <a href="${ctp}/user2/userList" class="w3-bar-item w3-button">user2 리스트</a>
         <a href="#" class="w3-bar-item w3-button">Ajax</a>
       </div>
     </div>

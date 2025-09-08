@@ -14,6 +14,7 @@ import com.spring.springGroupS.vo.UserVO;
 @Controller
 @RequestMapping("/user")
 public class UserController {
+	
 	@Autowired
 	UserService userService;
 	
@@ -28,11 +29,12 @@ public class UserController {
 	
 	@GetMapping("/userSearch")
 	public String userSearchGet(Model model, String mid) {
-		mid = "hkd1234";
+		//mid = "hkd1234";
 		UserVO vo = userService.getUserSearch(mid);
 		
-		System.out.println("vo" + vo);
+		System.out.println("vo : " + vo);
 		
 		return "";
 	}
+	
 }
