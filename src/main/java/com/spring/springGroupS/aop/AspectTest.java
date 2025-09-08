@@ -15,56 +15,56 @@ import org.springframework.stereotype.Component;
 @Component
 public class AspectTest {
 
-	// 문제1: getAopServiceTest1() 메소드 '전/후'에 메세지를 출력하시오.
+	// 臾몄��1: getAopServiceTest1() 硫����� '��/��'�� 硫��몄�瑜� 異��ν������.
 	@Around("execution(* com.spring.springGroupS.service.Study1Service.getAopServiceTest1(..))")
 	public void aroundAdvice(ProceedingJoinPoint joinPoint) throws Throwable {
-		System.out.println("\n 이곳은 aroundAdvice() 메소드 입니다. 핵심관심사 수행전 입니다. \n");
+		System.out.println("\n �닿납�� aroundAdvice() 硫����� ������. �듭�ш��ъ�� ������ ������. \n");
 		
 		joinPoint.proceed();
 		
-		System.out.println("\n 이곳은 aroundAdvice() 메소드 입니다. 핵심관심사 수행후 입니다. \n");
+		System.out.println("\n �닿납�� aroundAdvice() 硫����� ������. �듭�ш��ъ�� ������ ������. \n");
 	}
 	
-	// 문제2: getAopServiceTest3() 메소드 '전'에 메세지 출력하시오.
+	// 臾몄��2: getAopServiceTest3() 硫����� '��'�� 硫��몄� 異��ν������.
 	@Before("execution(* com.spring.springGroupS.service.Study1Service.getAopServiceTest3(..))")
 	public void beforeAdvice() {
-		System.out.println("\n 이곳은 beforeAdvice() 메소드 입니다. 핵심관심사 수행전 입니다. \n");
+		System.out.println("\n �닿납�� beforeAdvice() 硫����� ������. �듭�ш��ъ�� ������ ������. \n");
 	}
  	
-	// 문제3: getAopServiceTest2() 메소드 수행결과 메소드에서의 반환값을 콘솔에 출력하시오.
+	// 臾몄��3: getAopServiceTest2() 硫����� ����寃곌낵 硫����������� 諛���媛��� 肄����� 異��ν������.
 	@AfterReturning(value="execution(* com.spring.springGroupS.service.Study1Service.getAopServiceTest2(..))", returning="result")
 	public void afterReturningAdvice(JoinPoint joinPoint, Object result) {
-		System.out.println("\n 이곳은 afterReturningAdvice() 메소드 입니다. \n");
-		System.out.println("   핵심코드에서 반환된 값: " + result.toString() + "\n");
+		System.out.println("\n �닿납�� afterReturningAdvice() 硫����� ������. \n");
+		System.out.println("   �듭�ъ������� 諛����� 媛�: " + result.toString() + "\n");
 	}
 	
-	//문제4 : getAopServiceTest2()메소드와 getAopServiceTest3()메소드가 각각 수행하는데 걸리는 시간?
+	//臾몄��4 : getAopServiceTest2()硫������� getAopServiceTest3()硫�����媛� 媛�媛� ���������� 嫄몃━�� ��媛�?
 	long startTime, endTime;
 	@Pointcut("execution(* com.spring.springGroupS.service.Study1Service.getAopServiceTest5*(..))")
-	private void cut() {}
+// 	private void cut() {}
 	
 	@Around("cut()")
 	public void arroundAdvice2(ProceedingJoinPoint joinPoint) throws Throwable {
 		startTime = System.nanoTime();
 		
-		System.out.println("arroundAdvice2()메소드입니다. (전) : " + joinPoint);
+		System.out.println("arroundAdvice2()硫�����������. (��) : " + joinPoint);
 		joinPoint.proceed();
-		System.out.println("arroundAdvice2()메소드입니다. (후) : " + joinPoint);
+		System.out.println("arroundAdvice2()硫�����������. (��) : " + joinPoint);
 		
 		endTime = System.nanoTime();
 		
 		long res = endTime - startTime;
-		System.out.println("수행시간 : " + res);
+		System.out.println("������媛� : " + res);
 	}
 
 	
-	// 문제5: Study1service 객체안의 모든 메소드의 수행시간을 해당 메소드 이름과 함께 출력
+	// 臾몄��5: Study1service 媛�泥댁���� 紐⑤�� 硫������� ������媛��� �대�� 硫����� �대�怨� �④� 異���
 	int cnt = 0;
 	@Around("execution(* com.spring.springGroupS.service.Study1Service.*(..))")
 	//@Around("execution(* com.spring.springGroupS.service..*.*(..))")
 	public Object aroundAdvice5(ProceedingJoinPoint joinPoint) throws Throwable {
 		cnt++;
-		System.out.println(cnt + "번째 : 이곳은 aroundAdvice5메소드 입니다.");
+		System.out.println(cnt + "踰�吏� : �닿납�� aroundAdvice5硫����� ������.");
 		long startTime = System.nanoTime();
 		try {
 		  Object result = joinPoint.proceed();
@@ -72,8 +72,8 @@ public class AspectTest {
 		} finally {
 			long endTime = System.nanoTime();
 			long executionTime = endTime - startTime;
-			System.out.println(cnt + "번 메소드 수행시간 : " + executionTime + "ns\n");
-			System.out.println(cnt + "번끝 : ******************************************************\n");
+			System.out.println(cnt + "踰� 硫����� ������媛� : " + executionTime + "ns\n");
+			System.out.println(cnt + "踰��� : ******************************************************\n");
 		}
 	}
 }
