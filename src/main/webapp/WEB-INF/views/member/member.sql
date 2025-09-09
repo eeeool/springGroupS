@@ -29,3 +29,7 @@ create table member (
 );
 
 desc member;
+select * from member;
+
+INSERT INTO member (mid, pwd, nickName, name, gender, email)
+VALUES ('test1', '1234', '테스트', '홍길동', '남자', 'test@naver.com');

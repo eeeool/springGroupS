@@ -25,7 +25,7 @@
     	// 유효성 검사.....
     	// 아이디,닉네임,성명,이메일,홈페이지,전화번호,비밀번호 등등....
     	
-      let regURL = /^(https?:\/\/)?([a-z\d\.-]+)\.([a-z\.]{2,6})([\/\w\.-]*)*\/?$/;
+      	let regURL = /^(https?:\/\/)?([a-z\d\.-]+)\.([a-z\.]{2,6})([\/\w\.-]*)*\/?$/;
     	let regTel = /\d{2,3}-\d{3,4}-\d{4}$/g;
     	
     	// 검사를 끝내고 필요한 내역들을 변수에 담아 회원가입처리한다.
@@ -128,14 +128,14 @@
 			
 			// 전송전에 모든 체크가 끝나면 submitFlag가 1로 되게된다. 이때 값들을 서버로 전송처리한다.
 			if(submitFlag == 1) {
-	    	if(idCheckSw == 0) {
-	    		alert("아이디 중복체크버튼을 눌러주세요");
-	    		document.getElementById("midBtn").focus();
-	    	}
-	    	else if(nickCheckSw == 0) {
-	    		alert("닉네임 중복체크버튼을 눌러주세요");
-	    		document.getElementById("nickNameBtn").focus();
-	    	}
+		    	if(idCheckSw == 0) {
+		    		alert("아이디 중복체크버튼을 눌러주세요");
+		    		document.getElementById("midBtn").focus();
+		    	}
+		    	else if(nickCheckSw == 0) {
+		    		alert("닉네임 중복체크버튼을 눌러주세요");
+		    		document.getElementById("nickNameBtn").focus();
+		    	}
 	    	else {
 	    		myform.email.value = email;
 	    		myform.tel.value = tel;
@@ -159,6 +159,21 @@
     		return false;
     	}
     	
+    	$.ajax({
+    		url: '${ctp}/member/idCheck',
+    		type: 'post',
+    		data: { mid: mid },
+    		success: (res) => {
+    			if (res == "1") {
+    				alert('이미 사용중인 아이디입니다.');
+    			}
+    			else {
+    				alert('사용 가능한 아이디 입니다.');
+    				idCheckSw = 1;
+    			}
+    		},
+    		error: () => alert('전송 오류')
+    	});
     }
     
     // 닉네임 중복체크
@@ -171,6 +186,21 @@
     		return false;
     	}
     	
+    	$.ajax({
+    		url: '${ctp}/member/nickNameCheck',
+    		type: 'post',
+    		data: { nickName: nickName },
+    		success: (res) => {
+    			if (res == "1") {
+    				alert('이미 사용중인 닉네임 입니다.');
+    			}
+    			else {
+    				alert('사용 가능한 닉네임 입니다.');
+    				nickCheckSw = 1;
+    			}
+    		},
+    		error: () => alert('전송 오류')
+    	});
     }
     
     
