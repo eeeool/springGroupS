@@ -8,6 +8,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>memberJoin.jsp</title>
+  <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+  <script src="${ctp}/js/woo.js" ></script>
   <jsp:include page="/WEB-INF/views/include/bs5.jsp" />
   <script>
     'use strict';
@@ -164,11 +166,12 @@
     		type: 'post',
     		data: { mid: mid },
     		success: (res) => {
-    			if (res == "1") {
+    			if (res != "") {
     				alert('이미 사용중인 아이디입니다.');
     			}
     			else {
     				alert('사용 가능한 아이디 입니다.');
+    				document.getElementById("mid").disabled = true;
     				idCheckSw = 1;
     			}
     		},
@@ -191,11 +194,12 @@
     		type: 'post',
     		data: { nickName: nickName },
     		success: (res) => {
-    			if (res == "1") {
+    			if (res != "") {
     				alert('이미 사용중인 닉네임 입니다.');
     			}
     			else {
     				alert('사용 가능한 닉네임 입니다.');
+    				document.getElementById("nickName").disabled = true;
     				nickCheckSw = 1;
     			}
     		},
@@ -251,7 +255,52 @@
         return false;
       }
       
+    	// 인증번호를 메일로 전송하는동안 사용자 폼에는 스피너가 출력되도록 처리
+    		let spin = "<div class='text-center'><div class='spinner-border text-muted'></div> 메일 발송중입니다. 잠시만 기다려주세요 <div class='spinner-border text-muted'></div></div>";
+      	$("#demoSpin").html(spin);
     	
+    	// ajax를 통해서 인증번호 발송하기
+    	$.ajax({
+    		url: "${ctp}/member/memberEmailCheck",
+	    	type: "post",
+	    	data: {email: email},
+	    	success: (res) => {
+	    		if (res == 1) {
+	    			alert("인증번호가 발송되었습니다.\n메일 확인후 인증번호를 입력해주세요");
+	    			let str = '<div class="input-group mb-3">';
+	    			str += '<input type="text" name="checkKey" id="checkKey" class="form-control" />';
+	    			str += '<input type="button" value="인증번호 확인" onclick="emailCertificationOk()" class="btn btn-primary" />';
+	    			str += '</div';
+	    			$("#demoSpin").html(str);
+	    		}
+	    		else alert("인증번호 확인 버튼을 다시 눌러주세요");
+	    	},
+	    	error: () => alert('전송 오류')
+    	});
+    }
+    
+    // 인증번호 확인처리
+    function emailCertificationOk() {
+    	let checkKey = $('#checkKey').val();
+    	if (checkKey.trim() == '') {
+    		alert('메일로 전송받은 인증키를 입력해주세요');
+    		$('#checkKey').focus();
+    		return false;
+    	}
+    	
+    	$.ajax({
+    		url: "${ctp}/member/memberEmailCheckOk",
+	    	type: "post",
+	    	data: {checkKey: checkKey},
+	    	success: (res) => {
+	    		if (res == 1) {
+	    			$('#demoSpin').hide();
+	    			$('#addContent').show();
+	    		}
+	    		else alert('인증번호 오류, 메일을 통해서 발급받은 인증번호를 확인하세요.');
+	    	},
+	    	error: () => alert('전송 오류')
+    	});
     }
     
   </script>
@@ -267,27 +316,28 @@
   <form name="myform" method="post" class="was-validated">
     <h2 class="text-center">회 원 가 입</h2>
     <br/>
-    <div class="input-group mb-2">
+    <div class="input-group mb-3">
       <label for="mid" class="input-group-text bg-secondary-subtle border-secondary-subtle">아이디</label>
       <input type="text" class="form-control" name="mid" id="mid" placeholder="아이디를 입력하세요." autofocus required />
       <input type="button" value="아이디 중복체크" id="midBtn" class="btn btn-secondary btn-sm" onclick="idCheck()"/>
     </div>
-    <div class="input-group mb-2">
+    <div class="input-group mb-3">
       <label for="pwd" class="input-group-text bg-secondary-subtle border-secondary-subtle">비밀번호</label>
       <input type="password" name="pwd" id="pwd" class="form-control" placeholder="비밀번호를 입력하세요." required />
     </div>
-    <div class="input-group mb-2">
+    <div class="input-group mb-3">
       <label for="nickName" class="input-group-text bg-secondary-subtle border-secondary-subtle">닉네임</label>
       <input type="text" name="nickName" id="nickName" class="form-control" placeholder="별명을 입력하세요." required />
       <input type="button" id="nickNameBtn" value="닉네임 중복체크" class="btn btn-secondary btn-sm" onclick="nickCheck()"/>
     </div>
-    <div class="input-group mb-2">
+    <div class="input-group mb-3">
       <label for="name" class="input-group-text bg-secondary-subtle border-secondary-subtle">성 명</label>
       <input type="text" name="name" id="name" class="form-control" placeholder="성명을 입력하세요." required />
     </div>
-    <div class="input-group mb-2">
+    <div class="input-group mb-3">
       <label for="email1" class="input-group-text bg-secondary-subtle border-secondary-subtle">Email</label>
       <input type="text" name="email1" id="email1" class="form-control" placeholder="Email을 입력하세요." required style="width:150px" />
+      <div class="input-group-text border-white m-0 p-0">@</div>
       <select name="email2" class="form-select">
         <option value="naver.com" selected>naver.com</option>
         <option value="hanmail.net">hanmail.net</option>
@@ -297,11 +347,10 @@
         <option value="yahoo.com">yahoo.com</option>
       </select>
       <input type="button" value="인증번호받기" onclick="emailCertification()" id="certificationBtn" class="btn btn-secondary btn-sm" />
-      <!-- <div id="demoSpin"></div> -->
     </div>
-    <!-- <div id="addContent" style="display:none"> -->
-    <div id="addContent">
-	    <div class="input-group mb-2">
+    <div id="demoSpin" class="mb-3"></div>
+    <div id="addContent" style="display:none">
+	    <div class="input-group mb-3">
         <label class="input-group-text bg-secondary-subtle border-secondary-subtle">성 별</label>
         <div class="border form-control">
         <label class="form-check-label ms-3">
@@ -312,11 +361,11 @@
         </label>
         </div>
 	    </div>
-	    <div class="input-group mb-2">
+	    <div class="input-group mb-3">
 	      <label for="birthday" class="input-group-text bg-secondary-subtle border-secondary-subtle">생일</label>
 	      <input type="date" name="birthday" value="${today}" class="form-control"/>
 	    </div>
-	    <div class="input-group mb-2">
+	    <div class="input-group mb-3">
         <label class="input-group-text bg-secondary-subtle border-secondary-subtle">전화번호</label>
         <select name="tel1" class="form-select">
           <option value="010" selected>010</option>
@@ -336,7 +385,7 @@
         <div class="input-group-text border-light">-</div>
         <input type="text" name="tel3" size=4 maxlength=4 class="form-control"/>
 	    </div>
-	    <div class="row mb-2">
+	    <div class="row mb-3">
 	      <div class="col-2">
 	      	<label for="address" class="input-group-text bg-secondary-subtle border-secondary-subtle">주소</label>
 	      </div>

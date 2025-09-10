@@ -8,11 +8,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +27,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.spring.springGroupS.common.ARIAUtil;
@@ -29,6 +35,8 @@ import com.spring.springGroupS.common.SecurityUtil;
 import com.spring.springGroupS.service.Study1Service;
 import com.spring.springGroupS.service.StudyService;
 import com.spring.springGroupS.vo.HoewonVO;
+import com.spring.springGroupS.vo.MailVO;
+import com.spring.springGroupS.vo.MemberVO;
 import com.spring.springGroupS.vo.SiteInfor2VO;
 import com.spring.springGroupS.vo.SiteInforVO;
 import com.spring.springGroupS.vo.SungjukVO;
@@ -40,6 +48,9 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @RequestMapping("/study1")
 public class Study1Controller {
+	
+	@Autowired
+	JavaMailSender mailSender;
 	
 	@Autowired
 	BCryptPasswordEncoder passwordEncoder;
@@ -581,7 +592,6 @@ public class Study1Controller {
 		@ResponseBody()
 		@PostMapping(value="/password/bCryptpassword", produces="application/text; charset=utf8")
 		public String bCryptPasswordPost(String pwd) throws InvalidKeyException, UnsupportedEncodingException {
-			System.out.println("pwd : " + pwd);
 			
 			String encPwd = passwordEncoder.encode(pwd);
 			
@@ -590,4 +600,72 @@ public class Study1Controller {
 			pwd = "암호화된 비밀번호: " + encPwd;
 			return pwd;
 		}
+		
+		// 메일 작성폼 보기
+		@GetMapping("/mail/mailForm")
+		public String mailFormGet() {			
+			return "study1/mail/mailForm";
+		}
+		
+		// 메일 주소록 보기
+		@GetMapping("/mail/mailAddrModalForm")
+		public String mailAddrModalFormGet(Model model) {			
+			List<MemberVO> memberVos = studyService.getMemberList();
+		
+			model.addAttribute("memberVos", memberVos);	
+			
+			return "study1/mail/mailAddrModalForm";
+		} 
+		
+		// 메일 보내기
+		@PostMapping("/mail/mailForm")
+		public String mailFormPost(MailVO vo, HttpServletRequest request) throws MessagingException {
+			String toMail = vo.getToMail();
+			String title = vo.getTitle();
+			String content = vo.getContent();
+			
+			// 메일 전송을 위한 객체: MimeMessage(), MimeMessageHelper()
+			MimeMessage message = mailSender.createMimeMessage();
+			MimeMessageHelper messageHelper = new MimeMessageHelper(message, true, "UTF-8");
+			
+			// 메세지 보관함에 저장되는 content 변수안에 발신자의 필요한 정보를 추가로 담아준다.
+			content = content.replace("\n", "<br>");
+			content += "<br><hr><h3>SpringGroup에서 보냅니다.</h3><hr><br>";
+			content += "<p><img src=\"cid:image.jpg\" width='500px'></p>";
+			content += "<p>방문하기: <a href='http://49.142.157.251:9090/cjgreen'>springGroup</a></p>";
+			content += "<hr>";
+			messageHelper.setTo(toMail);
+			messageHelper.setSubject(title);
+			messageHelper.setText(content, true);
+			
+			/*FileSystemResource file = new FileSystemResource("D:\\springGroup\\springframework\\works\\springGroupS\\src\\main\\webapp\\resources\\images\\image.jpg");*/
+			FileSystemResource file = new FileSystemResource(request.getSession().getServletContext().getRealPath("/resources/images/image.jpg"));
+			messageHelper.addInline("image.jpg", file);
+			
+			// 첨부파일 보내기
+			file = new FileSystemResource(request.getSession().getServletContext().getRealPath("/resources/images/2.jpg"));
+			messageHelper.addAttachment("2.jpg", file);
+			file = new FileSystemResource(request.getSession().getServletContext().getRealPath("/resources/images/3.jpg"));
+			messageHelper.addAttachment("3.jpg", file);
+			
+			// 메일 전송하기
+			mailSender.send(message);
+			
+			return "redirect:/message/mailSendOk";
+		}
+		
+			// 파일 업로드폼 보기
+			@GetMapping("/fileUpload/fileUploadForm")
+			public String fileUploadFormGet() {			
+				return "study1/fileUpload/fileUploadForm";
+			}
+			
+			// 1개 파일 업로드 처리
+			@PostMapping("/fileUpload/fileUploadForm")
+			public String fileUploadFormPost(MultipartFile fName, String mid) {			
+				int res = studyService.setFileUpload(fName, mid);
+				
+				if (res != 0) return "redirect:/message/fileUploadOk";
+				else return "redirect:/message/fileUploadNo";
+			}
 }
