@@ -15,8 +15,12 @@
     function jusorokCheck() {
     	// let nWin = "${ctp}/_/_";
     	// window.open(nWin,"mailWin","width=300px, height:300px");
-    	
-    	
+    	const modal = new bootstrap.Modal(document.getElementById('modal'));
+    	modal.show();
+    }
+    function select(email) {
+    	$('input[name="toMail"]').val(email);
+    	$('#modal').modal('hide');
     }
  	</script>
   <style>
@@ -84,6 +88,40 @@
   </pre>
 </div>
 <p><br/></p>
+<!-- The Modal -->
+<div class="modal fade" id="modal">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title text-center w-100">주소록</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <table class="table table-bordered table-hover text-center">
+        	<tr>
+        		<th>ID</th>
+        		<th>Email</th>
+        	</tr>
+        	<c:forEach var="member" items="${memberVos}" varStatus="st">
+        		<tr onclick="select('${member.email}')">
+        			<td>${member.mid}</td>
+        			<td>${member.email}</td>
+        		</tr>
+        	</c:forEach>
+        </table>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 <jsp:include page="/WEB-INF/views/include/footer.jsp" />
 </body>
 </html>

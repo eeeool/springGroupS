@@ -9,4 +9,8 @@
 	<select id="getMemberNickNameCheck" resultType="com.spring.springGroupS.vo.MemberVO" >
 		select * from member where nickName=#{nickName}
 	</select>
+	
+	<select id="getAddressList" resultType="com.spring.springGroupS.vo.MemberVO" >
+		select mid, email from member
+	</select>
 </mapper>

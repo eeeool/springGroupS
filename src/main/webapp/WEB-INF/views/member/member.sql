@@ -33,3 +33,9 @@ select * from member;
 
 INSERT INTO member (mid, pwd, nickName, name, gender, email)
 VALUES ('test1', '1234', '테스트', '홍길동', '남자', 'test@naver.com');
+INSERT INTO member (mid, pwd, nickName, name, gender, email)
+VALUES
+('test2', '1234', '테스트2', 'test2', '남자', 'test2@gmail.com'),
+('test3', '1234', '테스트3', 'test3', '여자', 'test3@hanmail.net'),
+('test4', '1234', '테스트4', 'test4', '남자', 'test4@daum.net'),
+('test5', '1234', '테스트5', 'test5', '여자', 'test5@naver.com');

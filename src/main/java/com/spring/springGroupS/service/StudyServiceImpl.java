@@ -1,9 +1,9 @@
 package com.spring.springGroupS.service;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,7 +14,9 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.spring.springGroupS.dao.MemberDAO;
 import com.spring.springGroupS.dao.StudyDAO;
+import com.spring.springGroupS.vo.MemberVO;
 import com.spring.springGroupS.vo.UserVO;
 
 @Service
@@ -22,58 +24,60 @@ public class StudyServiceImpl implements StudyService {
 	
 	@Autowired
 	StudyDAO studyDAO;
+	@Autowired
+	MemberDAO memberDAO;
 
 	@Override
 	public String[] getCityStringArray(String dodo) {
 		String[] strArray = new String[100];
 		
-		if(dodo.equals("서울")) {
-			strArray[0] = "서초구";
-			strArray[1] = "강남구";
-			strArray[2] = "강서구";
-			strArray[3] = "서대문구";
-			strArray[4] = "관악구";
-			strArray[5] = "동작구";
-			strArray[6] = "마포구";
-			strArray[7] = "송파구";
-			strArray[8] = "노원구";
-			strArray[9] = "영등포구";
+		if(dodo.equals("����")) {
+			strArray[0] = "��珥�援�";
+			strArray[1] = "媛��④뎄";
+			strArray[2] = "媛���援�";
+			strArray[3] = "����臾멸뎄";
+			strArray[4] = "愿���援�";
+			strArray[5] = "����援�";
+			strArray[6] = "留��ш뎄";
+			strArray[7] = "�≫��援�";
+			strArray[8] = "�몄��援�";
+			strArray[9] = "���깊�ш뎄";
 		}
-		else if(dodo.equals("경기")) {
-			strArray[0] = "수원시";
-			strArray[1] = "안양시";
-			strArray[2] = "광명시";
-			strArray[3] = "평택시";
-			strArray[4] = "안성시";
-			strArray[5] = "성남시";
-			strArray[6] = "안산시";
-			strArray[7] = "용인시";
-			strArray[8] = "이천시";
-			strArray[9] = "화성시";
+		else if(dodo.equals("寃쎄린")) {
+			strArray[0] = "������";
+			strArray[1] = "������";
+			strArray[2] = "愿�紐���";
+			strArray[3] = "������";
+			strArray[4] = "���깆��";
+			strArray[5] = "�깅�⑥��";
+			strArray[6] = "���곗��";
+			strArray[7] = "�⑹�몄��";
+			strArray[8] = "�댁���";
+			strArray[9] = "���깆��";
 		}
-		else if(dodo.equals("충북")) {
-			strArray[0] = "청주시";
-			strArray[1] = "충주시";
-			strArray[2] = "제천시";
-			strArray[3] = "단양군";
-			strArray[4] = "증평군";
-			strArray[5] = "옥천군";
-			strArray[6] = "음성군";
-			strArray[7] = "영동군";
-			strArray[8] = "진천군";
-			strArray[9] = "괴산군";
+		else if(dodo.equals("異⑸�")) {
+			strArray[0] = "泥�二쇱��";
+			strArray[1] = "異⑹＜��";
+			strArray[2] = "��泥���";
+			strArray[3] = "�⑥��援�";
+			strArray[4] = "利���援�";
+			strArray[5] = "�μ�援�";
+			strArray[6] = "���깃뎔";
+			strArray[7] = "����援�";
+			strArray[8] = "吏�泥�援�";
+			strArray[9] = "愿댁�곌뎔";
 		}
-		else if(dodo.equals("충남")) {
-			strArray[0] = "천안시";
-			strArray[1] = "아산시";
-			strArray[2] = "공주시";
-			strArray[3] = "부여시";
-			strArray[4] = "논산군";
-			strArray[5] = "군산시";
-			strArray[6] = "서산시";
-			strArray[7] = "홍성군";
-			strArray[8] = "금산군";
-			strArray[9] = "태안시";
+		else if(dodo.equals("異⑸��")) {
+			strArray[0] = "泥�����";
+			strArray[1] = "���곗��";
+			strArray[2] = "怨듭＜��";
+			strArray[3] = "遺��ъ��";
+			strArray[4] = "�쇱�곌뎔";
+			strArray[5] = "援곗�곗��";
+			strArray[6] = "���곗��";
+			strArray[7] = "���깃뎔";
+			strArray[8] = "湲��곌뎔";
+			strArray[9] = "������";
 		}
 		
 		return strArray;
@@ -83,53 +87,53 @@ public class StudyServiceImpl implements StudyService {
 	public ArrayList<String> getCityArrayList(String dodo) {
 		ArrayList<String> vos = new ArrayList<String>();
 		
-		if(dodo.equals("서울")) {
-			vos.add("서초구");
-			vos.add("강남구");
-			vos.add("강서구");
-			vos.add("서대문구");
-			vos.add("관악구");
-			vos.add("동작구");
-			vos.add("마포구");
-			vos.add("송파구");
-			vos.add("노원구");
-			vos.add("영등포구");
+		if(dodo.equals("����")) {
+			vos.add("��珥�援�");
+			vos.add("媛��④뎄");
+			vos.add("媛���援�");
+			vos.add("����臾멸뎄");
+			vos.add("愿���援�");
+			vos.add("����援�");
+			vos.add("留��ш뎄");
+			vos.add("�≫��援�");
+			vos.add("�몄��援�");
+			vos.add("���깊�ш뎄");
 		}
-		else if(dodo.equals("경기")) {
-			vos.add("수원시");
-			vos.add("안양시");
-			vos.add("광명시");
-			vos.add("평택시");
-			vos.add("안성시");
-			vos.add("성남시");
-			vos.add("안산시");
-			vos.add("용인시");
-			vos.add("이천시");
-			vos.add("화성시");
+		else if(dodo.equals("寃쎄린")) {
+			vos.add("������");
+			vos.add("������");
+			vos.add("愿�紐���");
+			vos.add("������");
+			vos.add("���깆��");
+			vos.add("�깅�⑥��");
+			vos.add("���곗��");
+			vos.add("�⑹�몄��");
+			vos.add("�댁���");
+			vos.add("���깆��");
 		}
-		else if(dodo.equals("충북")) {
-			vos.add("청주시");
-			vos.add("충주시");
-			vos.add("제천시");
-			vos.add("단양군");
-			vos.add("증평군");
-			vos.add("옥천군");
-			vos.add("음성군");
-			vos.add("영동군");
-			vos.add("진천군");
-			vos.add("괴산군");
+		else if(dodo.equals("異⑸�")) {
+			vos.add("泥�二쇱��");
+			vos.add("異⑹＜��");
+			vos.add("��泥���");
+			vos.add("�⑥��援�");
+			vos.add("利���援�");
+			vos.add("�μ�援�");
+			vos.add("���깃뎔");
+			vos.add("����援�");
+			vos.add("吏�泥�援�");
+			vos.add("愿댁�곌뎔");
 		}
-		else if(dodo.equals("충남")) {
-			vos.add("천안시");
-			vos.add("아산시");
-			vos.add("공주시");
-			vos.add("부여시");
-			vos.add("논산군");
-			vos.add("군산시");
-			vos.add("서산시");
-			vos.add("홍성군");
-			vos.add("금산군");
-			vos.add("태안시");
+		else if(dodo.equals("異⑸��")) {
+			vos.add("泥�����");
+			vos.add("���곗��");
+			vos.add("怨듭＜��");
+			vos.add("遺��ъ��");
+			vos.add("�쇱�곌뎔");
+			vos.add("援곗�곗��");
+			vos.add("���곗��");
+			vos.add("���깃뎔");
+			vos.add("湲��곌뎔");
+			vos.add("������");
 		}
 		return vos;
 	}
@@ -153,7 +157,7 @@ public class StudyServiceImpl implements StudyService {
 	public int setFileUpload(MultipartFile fName, String mid) {
 		int res = 0;
 		
-		// 파일명 중복처리
+		// ���쇰� 以�蹂듭�由�
 		String oFileName = fName.getOriginalFilename();
 		String sFileName = mid + "_" + UUID.randomUUID().toString().substring(0,4) + "_" + oFileName;
 		
@@ -167,7 +171,7 @@ public class StudyServiceImpl implements StudyService {
 		return res;
 	}
 
-	// 파일 서버에 업로드 시키는 메소드
+	// ���� ��踰��� ��濡��� ���ㅻ�� 硫�����
 	private void writeFile(MultipartFile fName, String sFileName) throws IOException {
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
 		String realPath = request.getSession().getServletContext().getRealPath("/resources/data/fileUpload/");
@@ -179,5 +183,10 @@ public class StudyServiceImpl implements StudyService {
 		}
 		fos.flush();
 		fos.close();
+	}
+
+	@Override
+	public List<MemberVO> getAddressList() {
+		return memberDAO.getAddressList();
 	}
 }

@@ -221,6 +221,11 @@
 		    <artifactId>spring-context-support</artifactId>
 		    <version>${org.springframework-version}</version>
 		</dependency>
+		<dependency>
+		    <groupId>javax.activation</groupId>
+		    <artifactId>activation</artifactId>
+		    <version>1.1.1</version>
+		</dependency>
 		
 		<!-- 파일 업로드를 위한 라이브러리(2개) -->
 		<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
