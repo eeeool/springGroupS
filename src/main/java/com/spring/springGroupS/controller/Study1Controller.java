@@ -61,7 +61,7 @@ public class Study1Controller {
 	@Autowired
 	StudyService studyService;
 	
-	// QueryString 諛⑹���� �듯�� 媛��� ����
+	// QueryString 방식을 통한 값 전달
 	
 	//@RequestMapping(value = "/study1/mapping/test1", method = RequestMethod.GET)
 	@GetMapping("/mapping/menu")
@@ -170,7 +170,7 @@ public class Study1Controller {
 	
 	/* ---------------------------------------------- */
 	
-	// Path Variable諛⑹���쇰��� 媛����ъ�곗��
+	// Path Variable방식으로 값을 전달
 	@GetMapping("/mapping/test21/{mid}/{pwd}")
 	public String test21Get(Model model, @PathVariable String mid, @PathVariable String pwd) {
 		model.addAttribute("mid", mid);
@@ -208,7 +208,7 @@ public class Study1Controller {
 	
 	/* ====================================================== */
 	
-	// Post諛⑹���� ���� 媛��� ����
+	// Post방식으로 값 전달
 	
 	//@GetMapping("/mapping/test31")
 	//@RequestMapping(value = "/mapping/test31", method = RequestMethod.POST)
@@ -243,7 +243,7 @@ public class Study1Controller {
 	
 	@GetMapping("/mapping/test33")
 	public String test33Get(Model model, String mid, HoewonVO vo) {
-		// ���대��濡� DB���� ������蹂대�� 媛��몄���� VO�� �댁���� jsp濡� ��寃⑥���.
+		// 지금은 DB에서 회원정보를 가져와서 VO에 담아서 jsp로 넘기기.
 		vo.setMid(mid);
 		
 		model.addAttribute("vo", vo);
@@ -253,10 +253,10 @@ public class Study1Controller {
 	
 	@PostMapping("/mapping/test33")
 	public String test33Post(Model model, HoewonVO vo) {
-		// DB�� ���� ��蹂대�� ���μ���⑤��.(����媛���泥�由�)
+		// DB에 회원 정보를 등록처리한다.(회원가입처리)
 		
-		// ���� 媛����� 硫��몄�泥�由ы����.
-		model.addAttribute("message", vo.getMid() + "�� ���� 媛��� �����듬����.");
+		// 지금은 가입처리했다는 메시지를 띄우자.
+		model.addAttribute("message", vo.getMid() + "님 회원 가입되셨습니다.");
 		model.addAttribute("url", "/study1/mapping/test33");
 		model.addAttribute("mid", vo.getMid());
 //		model.addAttribute("url","/study1/mapping/test33?mid="+vo.getMid());
@@ -265,10 +265,10 @@ public class Study1Controller {
 	
 	@PostMapping("/mapping/test34")
 	public String test34Post(Model model, HoewonVO vo) {
-	  // DB�� ���� ��蹂대�� ���μ���⑤��.(����媛���泥�由�)
-		System.out.println("1.�닿납�� ���� ��蹂대�� DB�� ���μ�由ы��怨� ���듬����.");
+		// DB에 회원 정보를 등록처리한다.(회원가입처리)
+		System.out.println("1.이곳에서 회원 정보를 DB에 등록처리하고 돌아옵니다.");
 		
-		model.addAttribute("message","���� 媛��� �����듬����.");
+		model.addAttribute("message","회원 가입되셨습니다.");
 		model.addAttribute("vo", vo);
 		
 		return "study1/mapping/test34";
@@ -276,7 +276,7 @@ public class Study1Controller {
 	
 	@GetMapping("/mapping/test35")
 	public String test35Get(Model model, HoewonVO vo) {
-		// ���대��濡� DB���� ������蹂대�� 媛��몄���� VO�� �댁���� jsp濡� ��寃⑥���.
+		// 지금은 DB에서 회원정보를 가져와서 VO에 담아서 jsp로 넘기기.
 		// vo.setMid(mid);
 		
 		model.addAttribute("vo", vo);
@@ -286,11 +286,11 @@ public class Study1Controller {
 	
 	@PostMapping("/mapping/test35")
 	public String test35Post(Model model, HoewonVO vo) {
-		// �������대���� 泥リ���媛� 'a'濡� �������� ����留� 媛���泥�由ы����濡� ����.
+		// 사용자가 입력한 아이디가 'a'로 시작하면 회원가입처리하는것으로 가정.
 		
 		if(vo.getMid().substring(0, 1).equals("a")) {
-			// DB�� ���� ��蹂대�� ���μ���⑤��.(����媛���泥�由�)
-			System.out.println("2.�닿납�� ���� ��蹂대�� DB�� ���μ�由ы��怨� ���듬����.");
+			// DB에 회원 정보를 등록처리한다.(회원가입처리)
+			System.out.println("2.이곳에서 회원 정보를 DB에 등록처리하고 돌아옵니다.");
 			return "redirect:/message/hoewonInputOk?mid="+vo.getMid();
 		}
 		else return "redirect:/message/hoewonInputNo";
@@ -298,13 +298,13 @@ public class Study1Controller {
 	
 	@GetMapping("/aop/aopMenu")
 	public String aopMenuGet() {
-		log.info("study1而⑦�몃·�ъ�� aopMenu硫�����������.");
+		log.info("study1컨트롤러의 aopMenu메소드가 실행되었습니다.");
 		return "study1/aop/aopMenu";
 	}
 	
 	@GetMapping("/aop/test1")
 	public String aopTest1Get() {
-		log.info("study1而⑦�몃·�ъ�� test1硫�����������.");
+		log.info("study1컨트롤러의 test1메소드가 실행되었습니다.");
 		
 		//Study1Service service = new Study1Service();
 		//service.getAopServiceTest1();
@@ -316,7 +316,7 @@ public class Study1Controller {
 	
 	@GetMapping("/aop/test2")
 	public String aopTest2Get() {
-		log.info("study1而⑦�몃·�ъ�� test2硫�����������.");
+		log.info("study1컨트롤러의 test2메소드가 실행되었습니다.");
 		
 		study1Service.getAopServiceTest2();
 		
@@ -325,7 +325,7 @@ public class Study1Controller {
 	
 	@GetMapping("/aop/test3")
 	public String aopTest3Get() {
-		log.info("study1而⑦�몃·�ъ�� test3硫�����������.");
+		log.info("study1컨트롤러의 test3메소드가 실행되었습니다.");
 		
 		study1Service.getAopServiceTest3();
 		
@@ -334,7 +334,7 @@ public class Study1Controller {
 	
 	@GetMapping("/aop/test4")
 	public String aopTest4Get() {
-		log.info("study1而⑦�몃·�ъ�� test4硫�����������.");
+		log.info("study1컨트롤러의 test4메소드가 실행되었습니다.");
 		
 		study1Service.getAopServiceTest52();
 		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
@@ -345,7 +345,7 @@ public class Study1Controller {
 	
 	@GetMapping("/aop/test5")
 	public String aopTest5Get() {
-		// log.info("study1而⑦�몃·�ъ�� test5硫�����������.");
+		// log.info("study1컨트롤러의 test5메소드가 실행되었습니다.");
 		
 		study1Service.getAopServiceTest1();
 		study1Service.getAopServiceTest2();
@@ -356,7 +356,7 @@ public class Study1Controller {
 		return "study1/aop/aopMenu";
 	}
 	
-	// XML 媛� 二쇱���곗�� 硫���
+	// XML 값 주입(setter) 처리
 	@GetMapping("/xml/xmlMenu")
 	public String xmlMenuGet() {
 		return "study1/xml/xmlMenu";
@@ -447,20 +447,20 @@ public class Study1Controller {
 		return "study1/xml/xmlTest5";
 	}
 	
-	// restApi �쇰낫湲�
+	// restApi 폼
 	@GetMapping("/restApi/restApiForm")
 	public String restApiFormGet() {
 		return "study1/restApi/restApiForm";
 	}
 	
-	// REST API瑜� �듯�� �쇰� 硫��몄� 泥�由�1(X)
+	// REST API를 통한 자료 호출 처리1(X)
 	@GetMapping("/restApi/test1/{message}")
 	public String restApiTest1Get(@PathVariable String message) {
 		System.out.println("message : " + message);
 		return "message : " + message;
 	}
 	
-	// REST API瑜� �듯�� �쇰� 硫��몄� 泥�由�2(O)
+	// REST API를 통한 자료 호출 처리2(O)
 	@ResponseBody
 	@GetMapping("/restApi/test2/{message}")
 	public String restApiTest2Get(@PathVariable String message) {
@@ -468,40 +468,40 @@ public class Study1Controller {
 		return "message : " + message;
 	}
 	
-	// AJax �쇰낫湲�
+	// AJax 폼
 	@GetMapping("/ajax/ajaxForm")
 	public String ajaxFormGet() {
 		return "study1/ajax/ajaxForm";
 	}
 	
-	// �쇰� 媛� 泥�由�
+	// 단일 값 처리
 	@ResponseBody
 	@GetMapping("/ajax/ajaxTest1")
 	public String ajaxTest1Get(int item) {
 		return "item = " + item;
 	}
 	
-	// AJax �レ��媛� 泥�由�
+	// AJax 숫자값 처리
 	@ResponseBody
 	@PostMapping("/ajax/ajaxTest2")
 	public int ajaxTest2Get(int item) {
 		return item;
 	}
 	
-	// AJax 臾몄��媛� 泥�由�
+	// AJax 문자값 처리
 	@ResponseBody
 	@PostMapping("/ajax/ajaxTest3")
 	public String ajaxTest3Post(String item) {
 		return "item = " + item;
 	}
 	
-	// AJax 媛�泥� ���� �쇰낫湲�
+	// AJax 객체값 처리
 	@GetMapping("/ajax/ajaxObjectForm")
 	public String ajaxObjectFormGet() {
 		return "study1/ajax/ajaxObjectForm";
 	}
 	
-	// ajax泥�由ш껐怨쇰�� 諛곗��(String諛곗��)濡� ����...
+	// ajax처리결과를 배열(String배열)로
 	@ResponseBody
 	@PostMapping("/ajax/ajaxObject1")
 	public String[] ajaxObject1Post(String dodo) {
@@ -511,14 +511,14 @@ public class Study1Controller {
 		return studyService.getCityStringArray(dodo);
 	}
 	
-	// ajax泥�由ш껐怨쇰�� 媛�泥대같��(ArrayList<String>)濡� ����...
+	// ajax처리결과를 객체배열(ArrayList<String>)로
 	@ResponseBody
 	@PostMapping("/ajax/ajaxObject2")
 	public ArrayList<String> ajaxObject2Post(String dodo) {
 		return studyService.getCityArrayList(dodo);
 	}
 	
-	// ajax泥�由ш껐怨쇰�� 媛�泥대같��(Map<Object, Object>)濡� ����...
+	// ajax처리결과를 객체배열(Map<Object, Object>)로
 	@ResponseBody
 	@PostMapping("/ajax/ajaxObject3")
 	public Map<Object, Object> ajaxObject3Post(String dodo) {
@@ -529,7 +529,7 @@ public class Study1Controller {
 		return map;
 	}
 	
-	// 媛�泥대같��(arrayList)濡� ����...
+	// 객체배열(arrayList)로
 	@PostMapping("/ajax/ajaxObject4")
 	public String ajaxObject4Post(Model model, String mid) {
 		ArrayList<UserVO> vos = studyService.getUserList(mid);
@@ -538,21 +538,21 @@ public class Study1Controller {
 		return "study1/ajax/ajaxObjectForm";
 	}
 	
-	// vo媛�泥대� ����...
+	// vo객체
 	@ResponseBody
 	@PostMapping("/ajax/ajaxObject5")
 	public UserVO ajaxObject5Post(String mid) {
 		return studyService.getUserMidSearch(mid);
 	}
 	
-	// vo媛�泥대� ����...
+		// vo객체
 		@ResponseBody
 		@PostMapping("/ajax/ajaxObject6")
 		public ArrayList<UserVO> ajaxObject6Post(String mid) {
 			return studyService.getUserList(mid);
 		}
 		
-	// vo媛�泥대� ����...
+		// vo객체
 		@ResponseBody
 		@PostMapping("/ajax/ajaxObject7")
 		public ArrayList<UserVO> ajaxObject7Post(String mid) {
@@ -564,7 +564,7 @@ public class Study1Controller {
 			return "study1/password/passwordForm";
 		}
 		
-		// sha256���명��(ajax 泥�由�)
+		// sha256암호화(ajax 처리)
 		@ResponseBody()
 		@PostMapping("/password/sha256")
 		public String sha256Post(String pwd) {
@@ -575,7 +575,7 @@ public class Study1Controller {
 			return pwd;
 		}
 		
-		// aria���명��(ajax 泥�由�)
+		// aria암호화(ajax 처리)
 		@ResponseBody()
 		@PostMapping(value="/password/aria", produces="application/text; charset=utf8")
 		public String ariaPost(String pwd) throws InvalidKeyException, UnsupportedEncodingException {
@@ -588,7 +588,7 @@ public class Study1Controller {
 			return pwd;
 		}
 		
-		// BCryptPasswordEncoder���명��(ajax 泥�由�)
+		// BCryptPasswordEncoder암호화(ajax 처리)
 		@ResponseBody()
 		@PostMapping(value="/password/bCryptpassword", produces="application/text; charset=utf8")
 		public String bCryptPasswordPost(String pwd) throws InvalidKeyException, UnsupportedEncodingException {
@@ -618,15 +618,15 @@ public class Study1Controller {
 			String title = vo.getTitle();
 			String content = vo.getContent();
 			
-			// 硫��� ���≪�� ���� 媛�泥�: MimeMessage(), MimeMessageHelper()
+			// 메일 전송을 위한 객체 : MimeMessage(), MimeMessageHelper()
 			MimeMessage message = mailSender.createMimeMessage();
 			MimeMessageHelper messageHelper = new MimeMessageHelper(message, true, "UTF-8");
 			
-			// 硫��몄� 蹂닿��⑥�� ���λ���� content 蹂������� 諛������� ������ ��蹂대�� 異�媛�濡� �댁��以���.
+			// 메일보낼 내용을 content 변수에 받아서 내용을 추가로 보내준다.
 			content = content.replace("\n", "<br>");
-			content += "<br><hr><h3>SpringGroup���� 蹂대������.</h3><hr><br>";
+			content += "<br><hr><h3>SpringGroup에서 보내드렸습니다.</h3><hr><br>";
 			content += "<p><img src=\"cid:image.jpg\" width='500px'></p>";
-			content += "<p>諛⑸Ц��湲�: <a href='http://49.142.157.251:9090/cjgreen'>springGroup</a></p>";
+			content += "<p>방문하기: <a href='http://49.142.157.251:9090/cjgreen'>springGroup</a></p>";
 			content += "<hr>";
 			messageHelper.setTo(toMail);
 			messageHelper.setSubject(title);
@@ -636,7 +636,7 @@ public class Study1Controller {
 			FileSystemResource file = new FileSystemResource(request.getSession().getServletContext().getRealPath("/resources/images/image.jpg"));
 			messageHelper.addInline("image.jpg", file);
 			
-			// 泥⑤����� 蹂대�닿린
+			// 첨부파일 보내기
 			file = new FileSystemResource(request.getSession().getServletContext().getRealPath("/resources/images/2.jpg"));
 			messageHelper.addAttachment("2.jpg", file);
 			file = new FileSystemResource(request.getSession().getServletContext().getRealPath("/resources/images/3.jpg"));
