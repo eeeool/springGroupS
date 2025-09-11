@@ -87,7 +87,7 @@
     메일이 서버에 저장되어있기 때문에 로컬pc에 문제가 생겨도 이메일에는 아무 영향을 미치지 않는다.
   </pre>
 </div>
-<p><br/></p>
+
 <!-- The Modal -->
 <div class="modal fade" id="modal">
   <div class="modal-dialog modal-dialog-centered">
@@ -122,6 +122,8 @@
     </div>
   </div>
 </div>
+
+<p><br/></p>
 <jsp:include page="/WEB-INF/views/include/footer.jsp" />
 </body>
 </html>

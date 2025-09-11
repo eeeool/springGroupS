@@ -18,7 +18,7 @@
     let nickCheckSw = 0;
     
   	// 정규식을 이용한 유효성검사처리.....
-  	let regMid = /^[a-zA-Z0-9_]{4,20}$/;	// 아이디는 4~20의 영문 대/소문자와 숫자와 밑줄 가능
+  	let regMid = /^[a-zA-Z0-9_]{4,20}$/;// 아이디는 4~20의 영문 대/소문자와 숫자와 밑줄 가능
     let regNickName = /^[가-힣0-9_]+$/;		// 닉네임은 한글, 숫자, 밑줄만 가능
     let regName = /^[가-힣a-zA-Z]+$/;			// 이름은 한글/영문 가능
     let regEmail =/^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/;
@@ -27,7 +27,7 @@
     	// 유효성 검사.....
     	// 아이디,닉네임,성명,이메일,홈페이지,전화번호,비밀번호 등등....
     	
-      	let regURL = /^(https?:\/\/)?([a-z\d\.-]+)\.([a-z\.]{2,6})([\/\w\.-]*)*\/?$/;
+      let regURL = /^(https?:\/\/)?([a-z\d\.-]+)\.([a-z\.]{2,6})([\/\w\.-]*)*\/?$/;
     	let regTel = /\d{2,3}-\d{3,4}-\d{4}$/g;
     	
     	// 검사를 끝내고 필요한 내역들을 변수에 담아 회원가입처리한다.
@@ -67,7 +67,7 @@
         return false;
       }
       else if(!regNickName.test(nickName)) {
-        alert("닉네임은 한글만 사용가능합니다.");
+    	  alert("닉네임은 '한글/숫자/_'만 사용가능합니다.");
         myform.nickName.focus();
         return false;
       }
@@ -81,7 +81,7 @@
         myform.email1.focus();
         return false;
       }
-      else if((homePage != "http://" && homePage != "")) {
+      else if((homePage != "https://" && homePage != "")) {
         if(!regURL.test(homePage)) {
 	        alert("작성하신 홈페이지 주소가 URL 형식에 맞지않습니다.");
 	        myform.homePage.focus();
@@ -130,14 +130,14 @@
 			
 			// 전송전에 모든 체크가 끝나면 submitFlag가 1로 되게된다. 이때 값들을 서버로 전송처리한다.
 			if(submitFlag == 1) {
-		    	if(idCheckSw == 0) {
-		    		alert("아이디 중복체크버튼을 눌러주세요");
-		    		document.getElementById("midBtn").focus();
-		    	}
-		    	else if(nickCheckSw == 0) {
-		    		alert("닉네임 중복체크버튼을 눌러주세요");
-		    		document.getElementById("nickNameBtn").focus();
-		    	}
+	    	if(idCheckSw == 0) {
+	    		alert("아이디 중복체크버튼을 눌러주세요");
+	    		document.getElementById("midBtn").focus();
+	    	}
+	    	else if(nickCheckSw == 0) {
+	    		alert("닉네임 중복체크버튼을 눌러주세요");
+	    		document.getElementById("nickNameBtn").focus();
+	    	}
 	    	else {
 	    		myform.email.value = email;
 	    		myform.tel.value = tel;
@@ -153,58 +153,62 @@
     
     // 아이디 중복체크
     function idCheck() {
-    	let mid = myform.mid.value;
+    	let mid = myform.mid.value.trim();
     	
-    	if(mid.trim() == "") {
-    		alert("아이디를 입력하세요!");
+    	if(!regMid.test(mid)) {
+    		alert("아이디는 4~20자리의 영문 소/대문자와 숫자, 언더바(_)만 사용가능합니다.");
     		myform.mid.focus();
     		return false;
     	}
     	
-    	$.ajax({
-    		url: '${ctp}/member/idCheck',
-    		type: 'post',
-    		data: { mid: mid },
-    		success: (res) => {
-    			if (res != "") {
-    				alert('이미 사용중인 아이디입니다.');
-    			}
-    			else {
-    				alert('사용 가능한 아이디 입니다.');
-    				document.getElementById("mid").disabled = true;
-    				idCheckSw = 1;
-    			}
-    		},
-    		error: () => alert('전송 오류')
-    	});
+			$.ajax({
+				url  : "${ctp}/member/idCheck",
+				type : "post",
+				data : {mid : mid},
+				success: (res) => {
+					if(res != '') {
+						alert("이미 사용중인 아이디 입니다. 다시 입력하세요.");
+						myform.mid.focus();
+					}
+					else {
+						alert("사용 가능한 아이디 입니다.");
+						document.getElementById("mid").readOnly = true;
+						if(document.getElementById("pwd").value == '') document.getElementById("pwd").focus();
+		    		idCheckSw = 1;
+					}
+				},
+				error : () => alert("전송 오류!")
+			});
     }
     
     // 닉네임 중복체크
     function nickCheck() {
-    	let nickName = myform.nickName.value;
+    	let nickName = myform.nickName.value.trim();
     	
-    	if(nickName.trim() == "") {
-    		alert("닉네임을 입력하세요!");
-    		myform.nickName.focus();
-    		return false;
-    	}
+    	if(!regNickName.test(nickName)) {
+        alert("닉네임은 '한글/숫자/_'만 사용가능합니다.");
+        myform.nickName.focus();
+        return false;
+      }
     	
     	$.ajax({
-    		url: '${ctp}/member/nickNameCheck',
-    		type: 'post',
-    		data: { nickName: nickName },
-    		success: (res) => {
-    			if (res != "") {
-    				alert('이미 사용중인 닉네임 입니다.');
-    			}
-    			else {
-    				alert('사용 가능한 닉네임 입니다.');
-    				document.getElementById("nickName").disabled = true;
-    				nickCheckSw = 1;
-    			}
-    		},
-    		error: () => alert('전송 오류')
-    	});
+				url  : "${ctp}/member/nickNameCheck",
+				type : "post",
+				data : {nickName : nickName},
+				success: (res) => {
+					if(res != '') {
+						alert("이미 사용중인 닉네임 입니다. 다시 입력하세요.");
+						myform.nickName.focus();
+					}
+					else {
+						alert("사용 가능한 닉네임 입니다.");
+						document.getElementById("nickName").readOnly = true;
+						if(document.getElementById("name").value == '') document.getElementById("name").focus();
+						nickCheckSw = 1;
+					}
+				},
+				error : () =>	alert("전송 오류!")
+			});
     }
     
     
@@ -222,7 +226,7 @@
     // 이메일 인증번호 받기
     function emailCertification() {
     	let mid = myform.mid.value.trim();
-    	let pwd = myform.pwd.value;
+    	let pwd = myform.pwd.value.trim();
     	let nickName = myform.nickName.value;
     	let name = myform.name.value;
     	let email1 = myform.email1.value.trim();
@@ -234,13 +238,13 @@
     		myform.mid.focus();
     		return false;
     	}
-    	else if(pwd.trim() == "") {
-        alert("비밀번호는 1개이상의 문자와 특수문자 조합의 6~24 자리로 작성해주세요.");
+    	else if(pwd.length < 4 && pwd.length > 20) {
+        alert("비밀번호는 4~20 자리로 작성해주세요.");
         myform.pwd.focus();
         return false;
       }
       else if(!regNickName.test(nickName)) {
-        alert("닉네임은 한글만 사용가능합니다.");
+        alert("닉네임은 '한글/숫자/_'만 사용가능합니다.");
         myform.nickName.focus();
         return false;
       }
@@ -256,53 +260,79 @@
       }
       
     	// 인증번호를 메일로 전송하는동안 사용자 폼에는 스피너가 출력되도록 처리
-    		let spin = "<div class='text-center'><div class='spinner-border text-muted'></div> 메일 발송중입니다. 잠시만 기다려주세요 <div class='spinner-border text-muted'></div></div>";
-      	$("#demoSpin").html(spin);
+    	let spin = "<div class='text-center'><div class='spinner-border text-muted'></div> 메일 발송중입니다. 잠시만 기다려주세요 <div class='spinner-border text-muted'></div></div>";
+      $("#demoSpin").html(spin);
     	
     	// ajax를 통해서 인증번호 발송하기
     	$.ajax({
-    		url: "${ctp}/member/memberEmailCheck",
-	    	type: "post",
-	    	data: {email: email},
-	    	success: (res) => {
-	    		if (res == 1) {
-	    			alert("인증번호가 발송되었습니다.\n메일 확인후 인증번호를 입력해주세요");
-	    			let str = '<div class="input-group mb-3">';
-	    			str += '<input type="text" name="checkKey" id="checkKey" class="form-control" />';
-	    			str += '<input type="button" value="인증번호 확인" onclick="emailCertificationOk()" class="btn btn-primary" />';
-	    			str += '</div';
-	    			$("#demoSpin").html(str);
-	    		}
-	    		else alert("인증번호 확인 버튼을 다시 눌러주세요");
-	    	},
-	    	error: () => alert('전송 오류')
+    		url  : "${ctp}/member/memberEmailCheck",
+    		type : "post",
+    		data : {email : email},
+    		success: (res) => {
+    			if(res == 1) {
+    				alert("인증번호가 발송되었습니다.\n메일확인후 인증번호를 입력해주세요.");
+    				let str = '<div class="input-group mb-3">';
+    				str += '<input type="text" name="checkKey" id="checkKey" class="form-control"/>';
+    				str += '<span id="timeLimit" class="input-group-text"></span>';	// 인증시간 만료를 알리기위한 타이머삽입
+    				str += '<input type="button" value="인증번호확인" onclick="emailCertificationOk()" class="btn btn-primary btn-sm"/>';
+    				str += '</div>';
+    				$("#demoSpin").html(str);
+    				timer();
+    			}
+    			else alert("인증번호 확인버튼을 다시 눌러주세요!");
+    		},
+    		error : () => alert("전송오류")
     	});
     }
     
     // 인증번호 확인처리
     function emailCertificationOk() {
-    	let checkKey = $('#checkKey').val();
-    	if (checkKey.trim() == '') {
-    		alert('메일로 전송받은 인증키를 입력해주세요');
-    		$('#checkKey').focus();
+    	let checkKey = $("#checkKey").val();
+    	if(checkKey.trim() == "") {
+    		alert("메일로 전송받은 인증키를 입력해주세요");
+    		$("#checkKey").focus();
     		return false;
     	}
     	
     	$.ajax({
-    		url: "${ctp}/member/memberEmailCheckOk",
-	    	type: "post",
-	    	data: {checkKey: checkKey},
-	    	success: (res) => {
-	    		if (res == 1) {
-	    			$('#demoSpin').hide();
-	    			$('#addContent').show();
-	    		}
-	    		else alert('인증번호 오류, 메일을 통해서 발급받은 인증번호를 확인하세요.');
-	    	},
-	    	error: () => alert('전송 오류')
+    		url  : "${ctp}/member/memberEmailCheckOk",
+    		type : "post",
+    		data : {checkKey : checkKey},
+    		success: (res) => {
+    			if(res == 1) {
+    				clearInterval(interval);
+    				$("#demoSpin").hide();
+    				$("#addContent").show();
+    			}
+    			else alert("인증번호 오류~~ 메일을 통해서 발급받은 인증번호를 확인하세요.");
+    		},
+    		error : () => alert("전송오류")
     	});
     }
     
+	  // 인증번호 입력 제한시간 처리(2분 = 120초)
+	  let timeLimit = 120;
+	  let interval;
+	  function timer() {
+      interval = setInterval(() => {
+	      $("#timeLimit").html("남은 시간: "+timeLimit+"초");
+	            
+	      // 할당받은 시간(120초)를 모두 사용하면 기존에 전송받은 인증번호를 제거시키고 다시 인증번호를 전송받도록한다.
+	      if(timeLimit == 0) {
+          $("#demoSpin").html("");
+          timeLimit = 120;
+
+          $.ajax({
+             url : "${ctp}/member/memberEmailCheckNo",
+             type: "post",
+             success : () => alert("인증시간이 만료되었습니다.\n인증번호를 다시 받아주세요."),
+             error : () => alert("전송오류")
+          });
+          clearInterval(interval);
+	      }
+	      timeLimit--;
+      }, 1000);
+	  }
   </script>
   <style>
     label {width: 90px}
@@ -313,7 +343,7 @@
 <jsp:include page="/WEB-INF/views/include/slide2.jsp" />
 <p><br/></p>
 <div class="container">
-  <form name="myform" method="post" class="was-validated">
+  <form name="myform" method="post" class="was-validated" enctype="multipart/form-data">
     <h2 class="text-center">회 원 가 입</h2>
     <br/>
     <div class="input-group mb-3">

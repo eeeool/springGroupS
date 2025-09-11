@@ -14,4 +14,6 @@ public interface GuestService {
 
 	int setGuestDelete(int idx);
 
+	int getMemberSearch(String mid, String nickName, String name);
+
 }

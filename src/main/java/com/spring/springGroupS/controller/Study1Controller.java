@@ -601,7 +601,7 @@ public class Study1Controller {
 			return pwd;
 		}
 		
-		// 硫��� 二쇱��濡� 蹂닿린
+		// 주소록
 		@GetMapping("/mail/mailForm")
 		public String mailFormGet(Model model) {			
 			List<MemberVO> memberVos = studyService.getAddressList();
@@ -611,7 +611,7 @@ public class Study1Controller {
 			return "study1/mail/mailForm";
 		} 
 		
-		// 硫��� 蹂대�닿린
+		// 메일보내기
 		@PostMapping("/mail/mailForm")
 		public String mailFormPost(MailVO vo, HttpServletRequest request) throws MessagingException {
 			String toMail = vo.getToMail();
@@ -642,19 +642,19 @@ public class Study1Controller {
 			file = new FileSystemResource(request.getSession().getServletContext().getRealPath("/resources/images/3.jpg"));
 			messageHelper.addAttachment("3.jpg", file);
 			
-			// 硫��� ���≫��湲�
+			// 메일보내기
 			mailSender.send(message);
 			
 			return "redirect:/message/mailSendOk";
 		}
 		
-			// ���� ��濡����� 蹂닿린
+			// 파일업로드
 			@GetMapping("/fileUpload/fileUploadForm")
 			public String fileUploadFormGet() {			
 				return "study1/fileUpload/fileUploadForm";
 			}
 			
-			// 1媛� ���� ��濡��� 泥�由�
+			// 파일업로드
 			@PostMapping("/fileUpload/fileUploadForm")
 			public String fileUploadFormPost(MultipartFile fName, String mid) {			
 				int res = studyService.setFileUpload(fName, mid);

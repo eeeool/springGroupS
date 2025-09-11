@@ -13,6 +13,9 @@
 	<select id="getTotRecCnt" resultType="int">
 		select count(*) from guest;
 	</select>
+	<select id="getMemberSearch" resultType="int">
+		select count(*) from guest where name=#{mid} or name=#{nickName} or name=#{name};
+	</select>
 
 	<delete id="setGuestDelete">
 		delete from guest where idx = #{idx};

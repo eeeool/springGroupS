@@ -21,4 +21,19 @@ public class MemberServiceImpl implements MemberService {
 		return memberDAO.getMemberNickNameCheck(nickName);
 	}
 
+	@Override
+	public int setMemberJoin(MemberVO vo) {
+		return memberDAO.setMemberJoin(vo);
+	}
+
+	@Override
+	public void setLastDateUpdate(String mid) {
+		memberDAO.setLastDateUpdate(mid);
+	}
+
+	@Override
+	public int setMemberPwdChange(String mid, String pwd) {
+		return memberDAO.setMemberPwdChange(mid, pwd);
+	}
+
 }

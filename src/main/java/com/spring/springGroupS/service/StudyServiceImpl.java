@@ -157,7 +157,7 @@ public class StudyServiceImpl implements StudyService {
 	public int setFileUpload(MultipartFile fName, String mid) {
 		int res = 0;
 		
-		// ���쇰� 以�蹂듭�由�
+		// 파일중복처리
 		String oFileName = fName.getOriginalFilename();
 		String sFileName = mid + "_" + UUID.randomUUID().toString().substring(0,4) + "_" + oFileName;
 		
@@ -171,7 +171,7 @@ public class StudyServiceImpl implements StudyService {
 		return res;
 	}
 
-	// ���� ��踰��� ��濡��� ���ㅻ�� 硫�����
+	// 파일 서버에 업로드 시키는 메소드
 	private void writeFile(MultipartFile fName, String sFileName) throws IOException {
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
 		String realPath = request.getSession().getServletContext().getRealPath("/resources/data/fileUpload/");
