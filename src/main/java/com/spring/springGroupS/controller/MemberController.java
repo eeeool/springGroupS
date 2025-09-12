@@ -1,5 +1,6 @@
 package com.spring.springGroupS.controller;
 
+import java.util.List;
 import java.util.UUID;
 
 import javax.mail.MessagingException;
@@ -13,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -222,9 +224,9 @@ public class MemberController {
 	}
 	
 	// 회원 비밀번호 변경폼 보기
-	@GetMapping("/memberPwdCheck")
-	public String memberPwdCheckGet() {
-		
+	@GetMapping("/memberPwdCheck/{flag}")
+	public String memberPwdCheckGet(Model model, @PathVariable String flag) {
+		model.addAttribute("flag", flag);
 		return "member/memberPwdCheck";
 	}
 	
@@ -243,5 +245,79 @@ public class MemberController {
 		int res = memberService.setMemberPwdChange(mid, passwordEncoder.encode(newPwd));
 		if (res != 0) return "redirect:/message/passwordChangeOk";
 		return "redirect:/message/passwordChangeNo";
+	}
+	
+	// 아이디 찾기 폼보기
+	@GetMapping("/memberIdSearch")
+	public String memberIdSearchGet() {
+		return "member/memberIdSearch";
+	}
+	
+	// 아이디 찾기
+	@ResponseBody
+	@PostMapping("/memberIdSearch")
+	public List<MemberVO> memberIdSearchPost(Model model, String email) {
+		return memberService.getmemberIdSearch(email);
+	}
+	
+	// 회원 정보 수정폼보기
+	@GetMapping("/memberUpdate")
+	public String memberUpdateGet(Model model, String mid) {
+		MemberVO vo = memberService.getMemberIdCheck(mid);
+		model.addAttribute("vo", vo);
+		return "member/memberUpdate";
+	}
+	
+	// 회원 정보 수정처리하기
+	@PostMapping("/memberUpdate")
+	public String memberUpdatePost(MultipartFile fName, MemberVO vo, HttpSession session) {
+		String nickName = (String) session.getAttribute("sNickName");
+		if(memberService.getMemberNickNameCheck(vo.getNickName()) != null && !nickName.equals(vo.getNickName())) {
+			return "redirect:/message/nickCheckNo?mid="+vo.getMid();
+		}
+		
+		// 회원 사진처리
+		if(fName.getOriginalFilename() != null && !fName.getOriginalFilename().equals("")) {
+			if(!vo.getPhoto().equals("noimage.jpg")) projectProvide.fileDelete(vo.getPhoto(), "member");
+			vo.setPhoto(projectProvide.fileUpload(fName, vo.getMid(), "member"));
+		}
+		
+		int res = memberService.setMemberUpdateOk(vo);
+		if(res != 0) {
+			session.setAttribute("sNickName", vo.getNickName());
+			return "redirect:/message/memberUpdateOk?mid="+vo.getMid();
+		}
+		else return "redirect:/message/memberUpdateNo?mid="+vo.getMid();
+	}
+
+	// 회원 탈퇴 신청
+	@ResponseBody
+	@PostMapping("/userDelete")
+	public String userDeletePost(HttpSession session) {
+		String mid = (String) session.getAttribute("sMid");
+		int res = memberService.setUserDelete(mid);
+		
+		if (res != 0) {
+			session.invalidate();
+			return "1";
+		}
+		else return "0";
+	}
+	
+	// 회원 리스트 보기
+	@GetMapping("/memberList")
+	public String memberListGet(Model model,
+		@RequestParam(name="pag", defaultValue = "1", required = false) int pag,
+		@RequestParam(name="pagSize", defaultValue = "10", required = false) int pagSize,
+		@RequestParam(name="level", defaultValue = "99", required = false) int level
+	) {
+		List<MemberVO> vos = memberService.getMemberList(0, 100, level);
+		
+		model.addAttribute("pag", pag);
+		model.addAttribute("pagSize", pagSize);
+		
+		model.addAttribute("vos", vos);
+		model.addAttribute("level", level);
+		return "member/memberList";
 	}
 }

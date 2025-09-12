@@ -24,6 +24,8 @@
 	    <exclude-mapping path="/member/memberEmailCheck"/>
 	    <exclude-mapping path="/member/memberEmailCheckOk"/>
 	    <exclude-mapping path="/member/memberEmailCheckNo"/>
+ 	    <exclude-mapping path="/member/memberIdSearch"/>
+	    <exclude-mapping path="/member/memberPwdSearch"/>
 	    <beans:ref bean="level3Interceptor" />
 	  </interceptor>
 	  <interceptor>

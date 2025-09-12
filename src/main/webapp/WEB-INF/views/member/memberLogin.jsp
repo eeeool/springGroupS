@@ -35,7 +35,7 @@
           </div>
 	    		<div style="font-size:0.8em">
 	    			<input type="checkbox" name="idSave" checked /> 아이디 저장 /
-	    			<a href="javascript:midSearch()" class="text-decoration-none text-dark link-primary">아이디찾기</a> /
+	    			<a href="memberIdSearch" class="text-decoration-none text-dark link-primary">아이디찾기</a> /
 	    			<a href="javascript:pwdSearch()" class="text-decoration-none text-dark link-primary">비밀번호찾기</a>
 	    		</div>
         </td>

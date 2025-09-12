@@ -22,7 +22,7 @@
 	<hr/>
 	<div class="row">
 		<div class="col">
-			현재 회원 등급: ${strlevel}<br/>
+			현재 회원 등급: ${strLevel}<br/>
 			총 방문 횟수: ${mVo.visitCnt}<br/>
 			오늘 방문 횟수: ${mVo.todayCnt}<br/>
 			현재 가용 포인트: ${mVo.point}<br/>

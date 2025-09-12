@@ -28,8 +28,13 @@
     		},
     		success: (res) => {
     			if(res != '0') {
-    				$("#myform").hide();
-    				$("#newPassform").show();
+    				if ('${flag}' == 'p') {
+	    				$("#myform").hide();
+	    				$("#newPassform").show();    					
+    				}
+    				else {
+    					location.href = '${ctp}/member/memberUpdate?mid=${sMid}'
+    				}
     			}
     			else {
     				alert("비밀번호가 틀립니다. 확인해 주세요");

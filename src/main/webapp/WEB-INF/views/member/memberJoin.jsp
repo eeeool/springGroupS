@@ -61,7 +61,7 @@
     		myform.mid.focus();
     		return false;
     	}
-    	else if(pwd.length < 4 && pwd.length > 20) {
+    	else if(pwd.length < 4 || pwd.length > 20) {
         alert("비밀번호는 4~20 자리로 작성해주세요.");
         myform.pwd.focus();
         return false;

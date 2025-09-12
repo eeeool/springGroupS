@@ -1,5 +1,6 @@
 package com.spring.springGroupS.common;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.UUID;
@@ -84,5 +85,12 @@ public class ProjectProvide {
 		}
 		fos.flush();
 		fos.close();
+	}
+
+	public void fileDelete(String fileName, String part) {
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+		String realPath = request.getSession().getServletContext().getRealPath("/resources/data/"+part+"/");
+		File file = new File(realPath + fileName);
+		if(file.exists()) file.delete();
 	}
 }

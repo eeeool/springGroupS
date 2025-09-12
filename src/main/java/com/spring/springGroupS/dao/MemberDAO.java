@@ -18,4 +18,12 @@ public interface MemberDAO {
 	void setLastDateUpdate(@Param("mid") String mid);
 
 	int setMemberPwdChange(@Param("mid") String mid, @Param("pwd") String pwd);
+
+	List<MemberVO> getmemberIdSearch(@Param("email") String email);
+
+	int setMemberUpdateOk(@Param("vo") MemberVO vo);
+
+	int setUserDelete(@Param("mid") String mid);
+
+	List<MemberVO> getMemberList(@Param("startIndexNo") int startIndexNo, @Param("pageSize") int pageSize, @Param("level") int level);
 }
