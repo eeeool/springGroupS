@@ -45,11 +45,27 @@ public class AdminController {
 			@RequestParam(name="level", defaultValue = "99", required = false) int level
 		) {
 		// 페이징 처리
-		List<MemberVO> vos = memberService.getMemberList(0, pageSize, level);
+		int blockSize = 3;
+
+		int totUserCnt = adminService.totUserCnt(level);
+		int totPage = (totUserCnt % pageSize == 0) ? totUserCnt / pageSize : (totUserCnt / pageSize) + 1;
+		int startIdxNo = (pag - 1) * pageSize;
+		
+		int curBlock = (pag - 1) / blockSize;
+		int lastBlock = (totPage - 1) / blockSize;
+		
+		List<MemberVO> vos = memberService.getMemberList(startIdxNo, pageSize, level);
 		
 		// 페이징 변수 넘겨주기
 		model.addAttribute("vos", vos);
+		model.addAttribute("pag", pag);
+		model.addAttribute("pageSize", pageSize);
+		model.addAttribute("totPage", totPage);
+		model.addAttribute("blockSize", blockSize);
+		model.addAttribute("curBlock", curBlock);
+		model.addAttribute("lastBlock", lastBlock);
 		model.addAttribute("level", level);
+		
 		return "admin/member/adMemberList";
 	}
 }

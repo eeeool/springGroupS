@@ -10,4 +10,9 @@ public class AdminServiceImpl implements AdminService {
 	
 	@Autowired
 	AdminDAO adminDAO;
+
+	@Override
+	public int totUserCnt(int level) {
+		return adminDAO.totUserCnt(level) ;
+	}
 }

@@ -14,9 +14,18 @@
 		'use strict'
 		
 		function levelItemCheck() {
+			let pageSize = $('#pageSizeItem select').val();
 			let level = $('#levelItem').val();
-			location.href = 'adMemberList?level='+level;
+			location.href = 'adMemberList?pag=1&pageSize=' + pageSize + '&level='+level;
 		}
+		
+		$(() => {
+			$('#pageSizeItem select').on('change', function() {
+				const pageSize = $(this).val();
+				const level = $('#levelItem').val();
+				location.href = '${ctp}/admin/member/adMemberList?pag=1&pageSize=' + pageSize + '&level='+level;
+			})
+		});
 	</script>
 </head>
 <body>
@@ -34,8 +43,13 @@
 				<option value="0" ${level == 0 ? 'selected' : ''}>관리자</option>
 			</select>
 		</div>
-		<div class="col text-end">
-			페이징처리
+		<div class="col text-end" id="pageSizeItem">
+			<select name="pageSize" >
+	            <option value="5" <c:if test="${pageSize == 5}">selected</c:if>>5개씩 보기</option>
+	            <option value="10" <c:if test="${pageSize == 10}">selected</c:if>>10개씩 보기</option>
+	            <option value="15" <c:if test="${pageSize == 15}">selected</c:if>>15개씩 보기</option>
+	            <option value="20" <c:if test="${pageSize == 20}">selected</c:if>>20개씩 보기</option>
+            </select>
 		</div>
 	</div>
 	<table class="table table-hover text-center">
@@ -75,6 +89,21 @@
 			</tr>
 		</c:forEach>
 	</table>
+	<div class="container mt-4">
+  	<ul class="pagination justify-content-center">
+    	<c:if test="${curBlock > 0}"><li class="page-item"><a class="page-link" href="${ctp}/admin/member/adMemberList?pag=${(curBlock-1)*blockSize+1}&pageSize=${pageSize}&level=${level}">이전페이지</a></li></c:if>
+  		<c:forEach var="i" begin="${(curBlock*blockSize)+1}" end="${(curBlock*blockSize)+blockSize}">
+	        <c:if test="${i <= totPage}">
+	            <li class="page-item ${i == pag ? 'active' : ''}">
+	                <a class="page-link" href="${ctp}/admin/member/adMemberList?pag=${i}&pageSize=${pageSize}&level=${level}">
+	                    ${i}
+	                </a>
+	            </li>
+	        </c:if>
+    	</c:forEach>
+	    <c:if test="${curBlock < lastBlock}"><li class="page-item"><a class="page-link" href="${ctp}/admin/member/adMemberList?pag=${(curBlock+1)*blockSize+1}&pageSize=${pageSize}&level=${level}">다음페이지</a></li></c:if>
+  	</ul>
+	</div>
 </div>
 <p><br/></p>
 </body>
