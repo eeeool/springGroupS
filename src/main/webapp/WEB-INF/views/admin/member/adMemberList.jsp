@@ -83,7 +83,7 @@
     	
     	let idxSelectArray = '';
     	for (let i=0; i<myform.idxFlag.length; i++) {
-    		if (myform.idxFlag[i].checked) idxSelectArray += myform.idxFlag[i].value;
+    		if (myform.idxFlag[i].checked) idxSelectArray += myform.idxFlag[i].value + '/';
     	}
     	
     	if (idxSelectArray == '') {

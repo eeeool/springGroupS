@@ -25,6 +25,6 @@ public class MemberVO {
 	private int level;
 	private int visitCnt;
 	private int todayCnt;
-	private int startDate;
-	private int lastDate;
+	private String startDate;
+	private String lastDate;
 }

@@ -20,6 +20,19 @@ drop table board2;
 
 insert into board2 values (default,'admin','관리맨','게시판 서비스를 시작합니다.','즐거운 게시판 생활 되세요','192.168.50.20',default,default,default,default,default);
 
+INSERT INTO board2 (mid, nickName, title, content, hostIp, openSw, readNum, good)
+VALUES
+('user01', 'nick01', '게시글 제목 1', '게시글 내용 1', '127.0.0.1', 'OK', 0, 0),
+('user02', 'nick02', '게시글 제목 2', '게시글 내용 2', '127.0.0.2', 'OK', 0, 0),
+('user03', 'nick03', '게시글 제목 3', '게시글 내용 3', '127.0.0.3', 'OK', 0, 0),
+('user04', 'nick04', '게시글 제목 4', '게시글 내용 4', '127.0.0.4', 'OK', 0, 0),
+('user05', 'nick05', '게시글 제목 5', '게시글 내용 5', '127.0.0.5', 'OK', 0, 0),
+('user06', 'nick06', '게시글 제목 6', '게시글 내용 6', '127.0.0.6', 'OK', 0, 0),
+('user07', 'nick07', '게시글 제목 7', '게시글 내용 7', '127.0.0.7', 'OK', 0, 0),
+('user08', 'nick08', '게시글 제목 8', '게시글 내용 8', '127.0.0.8', 'OK', 0, 0),
+('user09', 'nick09', '게시글 제목 9', '게시글 내용 9', '127.0.0.9', 'OK', 0, 0),
+('user10', 'nick10', '게시글 제목 10', '게시글 내용 10', '127.0.0.10', 'OK', 0, 0);
+
 select * from board2;
 
 select *,timestampdiff(hour, wDate, now()) as hour_diff from board2 order by idx desc limit 0,10;

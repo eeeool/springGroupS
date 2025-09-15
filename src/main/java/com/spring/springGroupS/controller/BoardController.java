@@ -23,6 +23,7 @@ public class BoardController {
 	@Autowired
 	Pagination pagination;
 	
+	// 게시글 목록 보기
 	@GetMapping("/boardList")
 	public String boardListGet(Model model,
 			@RequestParam(name="pag", defaultValue="1", required = false) int pag,
@@ -37,7 +38,7 @@ public class BoardController {
 		int curBlock = (pag - 1) / blockSize;			
 		int lastBlock = (totPage - 1) / blockSize;
 		
-		List<BoardVO> vos = boardService.getBoardList(0, pageSize);
+		List<BoardVO> vos = boardService.getBoardList(startIndexNo, pageSize);
 		model.addAttribute("pag", pag);
 		model.addAttribute("pageSize", pageSize);
 		model.addAttribute("totPage", totPage);
@@ -66,6 +67,7 @@ public class BoardController {
 		else return "redirect:/message/boardInputNo";
 	}
 	
+	// 게시글 본문 보기
 	@GetMapping("/boardContent")
 	public String boardContentGet(Model model, int idx) {
 		BoardVO vo = boardService.getBoardContent(idx);

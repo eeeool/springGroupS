@@ -5,7 +5,7 @@
 		select *,
 		  timestampdiff(hour, wDate, now()) as hour_diff,
 		  datediff(now(), wDate) as date_diff
-		  from board2 b order by idx desc limit 0,10;
+		  from board2 b order by idx desc limit ${startIndexNo},${pageSize};
 	</select>
 	
 	<select id="getBoardContent" resultType="com.spring.springGroupS.vo.BoardVO">

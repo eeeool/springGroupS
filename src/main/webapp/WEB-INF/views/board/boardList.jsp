@@ -31,11 +31,11 @@
       <td><a href="boardInput" class="btn btn-success btn-sm">글쓰기</a></td>
       <td class="text-end">
         <select name="pageSize" id="pageSize" onchange="pageSizeCheck()">
-          <option ${pageSize==5  ? 'selected' : ''}>5</option>
-          <option ${pageSize==10 ? 'selected' : ''}>10</option>
-          <option ${pageSize==15 ? 'selected' : ''}>15</option>
-          <option ${pageSize==20 ? 'selected' : ''}>20</option>
-          <option ${pageSize==30 ? 'selected' : ''}>30</option>
+          <option value="5" ${pageSize==5  ? 'selected' : ''}>5</option>
+          <option value="10" ${pageSize==10 ? 'selected' : ''}>10</option>
+          <option value="15" ${pageSize==15 ? 'selected' : ''}>15</option>
+          <option value="20" ${pageSize==20 ? 'selected' : ''}>20</option>
+          <option value="30" ${pageSize==30 ? 'selected' : ''}>30</option>
         </select>
       </td>
     </tr>
