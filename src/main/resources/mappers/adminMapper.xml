@@ -7,4 +7,8 @@
 	        WHERE level = #{level}
 	    </if>
 	</select>
+	
+	<update id="setMemberLevelChange">
+		update member set level = #{level} where idx = #{idx}
+	</update>
 </mapper>

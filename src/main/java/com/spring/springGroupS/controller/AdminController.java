@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.spring.springGroupS.service.AdminService;
 import com.spring.springGroupS.service.MemberService;
@@ -67,5 +69,25 @@ public class AdminController {
 		model.addAttribute("level", level);
 		
 		return "admin/member/adMemberList";
+	}
+	
+	// 회원등급 변경처리
+//	@ResponseBody
+//	@PostMapping("/member/memberLevelChange")
+//	public String memberLevelChange(int idx, int level) {
+//		return adminService.setMemberLevelChange(idx, level) + "";
+//	}
+	
+	@ResponseBody
+	@PostMapping("/member/memberLevelChange")
+	public int memberLevelChange(int idx, int level) {
+		return adminService.setMemberLevelChange(idx, level);
+	}
+	
+	//선택한 회원들 등급변경 처리
+	@ResponseBody
+	@PostMapping("/member/memberLevelSelectChange")
+	public int memberLevelSelectChange(String idxSelectArray, int levelSelect) {
+		return adminService.memberLevelSelectChange(idxSelectArray, levelSelect);
 	}
 }

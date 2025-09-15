@@ -1,0 +1,16 @@
+package com.spring.springGroupS.vo;
+
+import lombok.Data;
+
+@Data
+public class PageVO {
+	private int pag;
+	private int pageSize;
+	private int totRecCnt;
+	private int totPage;
+	private int StartIndexNo;
+	private int curScrStartNo;
+	private int blockSize;
+	private int curBlock;
+	private int lastBlock;
+}
