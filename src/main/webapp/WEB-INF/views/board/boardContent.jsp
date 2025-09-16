@@ -16,7 +16,7 @@
     // 좋아요 처리(중복 불허)
     function goodCheck() {
     	$.ajax({
-    		url  : 'BoardGoodCheck.bo',
+    		url  : 'BoardGoodCheck',
     		type : 'post',
     		data : {idx : ${vo.idx}},
     		success:function(res) {
@@ -30,7 +30,7 @@
     // 좋아요(따봉) 처리(중복 허용)
     function goodCheckPlus() {
     	$.ajax({
-    		url  : 'BoardGoodCheckPlusMinus.bo',
+    		url  : 'BoardGoodCheckPlusMinus',
     		type : 'post',
     		data : {
     			idx : ${vo.idx},
@@ -46,7 +46,7 @@
     // 싫어요 처리(중복 허용)
     function goodCheckMinus() {
     	$.ajax({
-    		url  : 'BoardGoodCheckPlusMinus.bo',
+    		url  : 'BoardGoodCheckPlusMinus',
     		type : 'post',
     		data : {
     			idx : ${vo.idx},
@@ -167,7 +167,7 @@
       <th>글쓴이</th>
       <td>${vo.nickName}</td>
       <th>글쓴날짜</th>
-      <td>${vo.WDate}</td>
+      <td>${fn:substring(vo.WDate, 0, 19)}</td>
     </tr>
     <tr>
       <th>글조회수</th>
@@ -213,15 +213,15 @@
   <table class="table table-borderless m-0 p-0">
     <tr>
       <td class="m-0 p-0">
-        <c:if test="${!empty nextVo.title}">
-	        👆 <a href="boardContent?idx=${nextVo.idx}&pag=${pag}&pageSize=${pageSize}" class="text-decoration-none">다음글 : ${nextVo.title}</a>
+        <c:if test="${!empty nextVO.title}">
+	        👆 <a href="boardContent?idx=${nextVO.idx}&pag=${pag}&pageSize=${pageSize}" class="text-decoration-none">다음글 : ${nextVO.title}</a>
         </c:if>
       </td>
     </tr>
     <tr>
       <td class="m-0 p-0">
-        <c:if test="${!empty preVo.title}">
-        	👇 <a href="boardContent?idx=${preVo.idx}&pag=${pag}&pageSize=${pageSize}" class="text-decoration-none">이전글 : ${preVo.title}</a>
+        <c:if test="${!empty preVO.title}">
+        	👇 <a href="boardContent?idx=${preVO.idx}&pag=${pag}&pageSize=${pageSize}" class="text-decoration-none">이전글 : ${preVO.title}</a>
         </c:if>
       </td>
     </tr>

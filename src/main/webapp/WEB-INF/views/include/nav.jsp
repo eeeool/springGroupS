@@ -20,7 +20,7 @@
 						}
 						else alert('회원탈퇴 실패')
 					},
-					error: () => alert('전송 오류')';
+					error: () => alert('전송 오류')
 				});
 			}
 		}

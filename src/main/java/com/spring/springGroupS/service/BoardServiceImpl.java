@@ -1,9 +1,18 @@
 package com.spring.springGroupS.service;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.spring.springGroupS.dao.BoardDAO;
 import com.spring.springGroupS.vo.BoardVO;
@@ -15,13 +24,8 @@ public class BoardServiceImpl implements BoardService {
 	BoardDAO boardDAO;
 
 	@Override
-	public List<BoardVO> getBoardList(int startIndexNo, int pageSize) {
-		return boardDAO.getBoardList(startIndexNo, pageSize);
-	}
-
-	@Override
-	public int getTotRecCnt() {
-		return boardDAO.getTotRecCnt();
+	public List<BoardVO> getBoardList(int startIndexNo, int pageSize, String search, String searchString) {
+		return boardDAO.getBoardList(startIndexNo, pageSize, search, searchString);
 	}
 
 	@Override
@@ -32,5 +36,132 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public BoardVO getBoardContent(int idx) {
 		return boardDAO.getBoardContent(idx);
+	}
+
+	@Override
+	public int getTotRecCnt(String search, String searchString) {
+		return boardDAO.getTotRecCnt(search, searchString);
+	}
+
+	@Override
+	public void imgCheck(String content) {
+		// ckeditor폴더의 그림을 board폴더로 복사처리
+		
+		// <img alt="" src="/springGroupS/data/ckeditor/250915170307_4.jpg"
+		// <img alt="" src="/springGroupS/data/board/250915170307_4.jpg"
+		
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+		String realPath = request.getSession().getServletContext().getRealPath("/resources/data/");
+		
+		int position = 33;
+		String nextImg = content.substring(content.indexOf("src=\"/") + position);
+		boolean sw = true;
+		
+		while (sw) {
+			String imgFile = nextImg.substring(0, nextImg.indexOf("\""));
+			
+			String origFilePath = realPath + "cheditor/" + imgFile;
+			String copyFilePath = realPath + "board/" + imgFile;
+			
+			fileCopyCheck(origFilePath, copyFilePath);
+			
+			if (nextImg.indexOf("src=\"/") == -1) sw = false;
+			else nextImg = nextImg.substring(nextImg.indexOf("src=\"/") + position);
+		}
+	}
+
+	private void fileCopyCheck(String origFilePath, String copyFilePath) {
+		try {
+			FileInputStream fis = new FileInputStream(new File(origFilePath));
+			FileOutputStream fos = new FileOutputStream(new File(copyFilePath));
+			
+			byte[] bytes = new byte[2048];
+			int cnt = 0;
+			
+			while ((cnt = fis.read(bytes)) != -1) {
+				fos.write(bytes, 0 ,cnt);
+			}
+			fos.flush();
+			fos.close();
+			fis.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void setReadNumPlus(int idx) {
+		boardDAO.setReadNumPlus(idx);
+	}
+
+	@Override
+	public void setGoodReadNumPlus(int idx) {
+		boardDAO.setGoodReadNumPlus(idx);
+	}
+
+	@Override
+	public BoardVO getPreNextSearch(int idx, String str) {
+		return boardDAO.getPreNextSearch(idx, str);
+	}
+
+	@Override
+	public void imgBackup(String content) {
+			// ckeditor폴더의 그림을 board폴더로 복사처리
+		
+			// <img alt="" src="/springGroupS/data/ckeditor/250915170307_4.jpg"
+			// <img alt="" src="/springGroupS/data/board/250915170307_4.jpg"
+			
+			HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+			String realPath = request.getSession().getServletContext().getRealPath("/resources/data/");
+			
+			int position = 30;
+			String nextImg = content.substring(content.indexOf("src=\"/") + position);
+			boolean sw = true;
+			
+			while (sw) {
+				String imgFile = nextImg.substring(0, nextImg.indexOf("\""));
+				
+				String origFilePath = realPath + "board/" + imgFile;
+				String copyFilePath = realPath + "cheditor/" + imgFile;
+				
+				fileCopyCheck(origFilePath, copyFilePath);
+				
+				if (nextImg.indexOf("src=\"/") == -1) sw = false;
+				else nextImg = nextImg.substring(nextImg.indexOf("src=\"/") + position);
+			}
+	}
+
+	@Override
+	public int setBoardUpdate(BoardVO vo) {
+		return boardDAO.setBoardUpdate(vo);
+	}
+
+	@Override
+	public void imgDelete(String content) {
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+		String realPath = request.getSession().getServletContext().getRealPath("/resources/data/");
+		
+		int position = 30;
+		String nextImg = content.substring(content.indexOf("src=\"/") + position);
+		boolean sw = true;
+		
+		while (sw) {
+			String imgFile = nextImg.substring(0, nextImg.indexOf("\""));
+			
+			String origFilePath = realPath + "board/" + imgFile;
+			
+			fileDelete(origFilePath);
+			
+			if (nextImg.indexOf("src=\"/") == -1) sw = false;
+			else nextImg = nextImg.substring(nextImg.indexOf("src=\"/") + position);
+	}
+}
+
+	private void fileDelete(String origFilePath) {
+		File delFile = new File(origFilePath);
+		
+		if (delFile.exists()) delFile.delete();
 	}
 }
