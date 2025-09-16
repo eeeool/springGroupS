@@ -60,7 +60,7 @@ public class BoardServiceImpl implements BoardService {
 		while (sw) {
 			String imgFile = nextImg.substring(0, nextImg.indexOf("\""));
 			
-			String origFilePath = realPath + "cheditor/" + imgFile;
+			String origFilePath = realPath + "ckeditor/" + imgFile;
 			String copyFilePath = realPath + "board/" + imgFile;
 			
 			fileCopyCheck(origFilePath, copyFilePath);
@@ -108,29 +108,29 @@ public class BoardServiceImpl implements BoardService {
 
 	@Override
 	public void imgBackup(String content) {
-			// ckeditor폴더의 그림을 board폴더로 복사처리
+		// ckeditor폴더의 그림을 board폴더로 복사처리
+	
+		// <img alt="" src="/springGroupS/data/ckeditor/250915170307_4.jpg"
+		// <img alt="" src="/springGroupS/data/board/250915170307_4.jpg"
 		
-			// <img alt="" src="/springGroupS/data/ckeditor/250915170307_4.jpg"
-			// <img alt="" src="/springGroupS/data/board/250915170307_4.jpg"
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+		String realPath = request.getSession().getServletContext().getRealPath("/resources/data/");
+		
+		int position = 30;
+		String nextImg = content.substring(content.indexOf("src=\"/") + position);
+		boolean sw = true;
+		
+		while (sw) {
+			String imgFile = nextImg.substring(0, nextImg.indexOf("\""));
 			
-			HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-			String realPath = request.getSession().getServletContext().getRealPath("/resources/data/");
+			String origFilePath = realPath + "board/" + imgFile;
+			String copyFilePath = realPath + "ckeditor/" + imgFile;
 			
-			int position = 30;
-			String nextImg = content.substring(content.indexOf("src=\"/") + position);
-			boolean sw = true;
+			fileCopyCheck(origFilePath, copyFilePath);
 			
-			while (sw) {
-				String imgFile = nextImg.substring(0, nextImg.indexOf("\""));
-				
-				String origFilePath = realPath + "board/" + imgFile;
-				String copyFilePath = realPath + "cheditor/" + imgFile;
-				
-				fileCopyCheck(origFilePath, copyFilePath);
-				
-				if (nextImg.indexOf("src=\"/") == -1) sw = false;
-				else nextImg = nextImg.substring(nextImg.indexOf("src=\"/") + position);
-			}
+			if (nextImg.indexOf("src=\"/") == -1) sw = false;
+			else nextImg = nextImg.substring(nextImg.indexOf("src=\"/") + position);
+		}
 	}
 
 	@Override
@@ -156,8 +156,8 @@ public class BoardServiceImpl implements BoardService {
 			
 			if (nextImg.indexOf("src=\"/") == -1) sw = false;
 			else nextImg = nextImg.substring(nextImg.indexOf("src=\"/") + position);
+		}
 	}
-}
 
 	private void fileDelete(String origFilePath) {
 		File delFile = new File(origFilePath);

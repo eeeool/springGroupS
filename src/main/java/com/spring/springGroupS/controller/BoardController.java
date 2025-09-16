@@ -157,7 +157,7 @@ public class BoardController {
 			if (vo.getContent().indexOf("src=\"/") != -1) boardService.imgCheck(vo.getContent());
 			
 			// 3. 이미지 작업(복사잡업)을 모두 마치면, ckeditor 폴더를 board폴더로 변경시킨다.
-			vo.setContent(vo.getContent().replace("/data/ceeditor", "/data/board/"));
+			vo.setContent(vo.getContent().replace("/data/ckeditor", "/data/board/"));
 		}
 		
 		int res = boardService.setBoardUpdate(vo);

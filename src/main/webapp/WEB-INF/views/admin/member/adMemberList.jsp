@@ -180,15 +180,15 @@
 		<table class="table table-hover text-center">
 			<tr class="table-secondary">
 				<th>번호</th>
-	      <th>아이디</th>
-	      <th>닉네임</th>
-	      <th>성명</th>
-	      <th>생일</th>
-	      <th>성별</th>
-	      <th>최종방문일</th>
-	      <th>오늘방문횟수</th>
-	      <th>활동여부</th>
-	      <th>회원등급</th>
+			    <th>아이디</th>
+			    <th>닉네임</th>
+			    <th>성명</th>
+			    <th>생일</th>
+			    <th>성별</th>
+			    <th>최종방문일</th>
+			    <th>오늘방문횟수</th>
+			    <th>활동여부</th>
+			    <th>회원등급</th>
 			</tr>
 			<c:forEach var="vo" items="${vos}" varStatus="st">
 				<tr>
@@ -197,9 +197,9 @@
 	          <c:if test="${vo.level == 0}"><input type="checkbox" name="idxFlag" id="idxFlag${vo.idx}" value="${vo.idx}" disabled /></c:if>
 	          ${vo.idx}
 					 <td>
-	          <c:set var="level" value="${vo.level==0?'관리자':vo.level==1?'우수회원':vo.level==2?'정회원':'준회원'}"/>
+	          <c:set var="levelStr" value="${vo.level==0?'관리자':vo.level==1?'우수회원':vo.level==2?'정회원':'준회원'}"/>
 	          <c:set var="content" value="${fn:replace(fn:replace(vo.content, CRLF, '<br/>'),LF, '<br/>')}"/>
-	          <a href="#" onclick="modalCheck('${vo.mid}','${vo.nickName}','${vo.name}','${level}','${fn:substring(vo.birthday,0,10)}','${vo.gender}','${vo.userDel=='NO'?'활동중':'탈퇴신청중'}','${vo.visitCnt}','${vo.photo}','${content}')" data-bs-toggle="modal" data-bs-target="#myModal">${vo.mid}</a>
+	          <a href="#" onclick="modalCheck('${vo.mid}','${vo.nickName}','${vo.name}','${levelStr}','${fn:substring(vo.birthday,0,10)}','${vo.gender}','${vo.userDel=='NO'?'활동중':'탈퇴신청중'}','${vo.visitCnt}','${vo.photo}','${content}')" data-bs-toggle="modal" data-bs-target="#myModal">${vo.mid}</a>
 	        </td>
 					<%-- <td>${vo.mid}</td> --%>
 					<td>

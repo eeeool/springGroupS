@@ -51,10 +51,14 @@ public class AdminController {
 
 		int totUserCnt = adminService.totUserCnt(level);
 		int totPage = (totUserCnt % pageSize == 0) ? totUserCnt / pageSize : (totUserCnt / pageSize) + 1;
-		int startIdxNo = (pag - 1) * pageSize;
 		
+		if(totPage == 0) totPage = 1;
+		
+		int startIdxNo = (pag - 1) * pageSize;
 		int curBlock = (pag - 1) / blockSize;
 		int lastBlock = (totPage - 1) / blockSize;
+		
+		if (lastBlock < 0) lastBlock = 0;
 		
 		List<MemberVO> vos = memberService.getMemberList(startIdxNo, pageSize, level);
 		
