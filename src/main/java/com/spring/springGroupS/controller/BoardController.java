@@ -230,7 +230,6 @@ public class BoardController {
 	public int boardReplyInputOkPost(Board2ReplyVO replyVO) {
 		// 대댓글(답변글)의 re_order는 1:자신의 re_step은 부모re_step+1 시켜주고, 
 		// 2:부모댓글 re_order값보다 큰re_order은 re_order+1시켜주고, 3:자신의 re_order는 부모re_order+1처리한다.
-		System.out.println("replyVO22 : " + replyVO);
 		replyVO.setRe_step(replyVO.getRe_step()+1);	// 1번처리
 		boardService.setReplyOrderUpdate(replyVO.getBoard2Idx(), replyVO.getRe_order());	// 2번처리
 		replyVO.setRe_order(replyVO.getRe_order() + 1);

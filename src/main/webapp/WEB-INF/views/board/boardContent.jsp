@@ -153,15 +153,20 @@
 		
 		// 대댓글 답글버튼 클릭시 입력박스 보여주기
 		function replyShow(idx) {
+			// 댓글 닫기
 			$(".replyBoxContent").hide();
-			$("#replyShowBtn"+idx).hide();
-			$("#replyCloseBtn"+idx).show();
-			$("#replyDemo"+idx).show();
+		    $(".replyShowBtn").show();
+		    $(".replyCloseBtn").hide();
+
+		    // 선택댓글 열기
+		    $("#replyDemo" + idx).show();
+		    $("#replyShowBtn" + idx).hide();
+		    $("#replyCloseBtn" + idx).show();
 		}
 		
 		// 대댓글 닫기버튼 클릭시 댓글박스 닫기
 		function replyClose(idx) {
-			$(".replyBoxContent"+idx).show();
+			// $(".replyBoxContent"+idx).show();
 			$("#replyShowBtn"+idx).show();
 			$("#replyCloseBtn"+idx).hide();
 			$("#replyDemo"+idx).hide();
@@ -309,8 +314,8 @@
         <td>${fn:substring(replyVO.WDate,0,16)}</td>
         <td>${replyVO.hostIp}</td>
         <td>
-          <a href="javascript:replyShow(${replyVO.idx})"  id="replyShowBtn${replyVO.idx}"  class="badge bg-success text-decoration-none">답글</a>
-          <a href="javascript:replyClose(${replyVO.idx})" id="replyCloseBtn${replyVO.idx}" class="badge bg-warning text-decoration-none replyCloseBtnCheck" style="display: none;">닫기</a>
+          <a href="javascript:replyShow(${replyVO.idx})"  id="replyShowBtn${replyVO.idx}"  class="badge bg-success text-decoration-none replyShowBtn">답글</a>
+          <a href="javascript:replyClose(${replyVO.idx})" id="replyCloseBtn${replyVO.idx}" class="badge bg-warning text-decoration-none replyCloseBtn" style="display: none;">닫기</a>
         </td>
       </tr>
       <tr id="replyDemo${replyVO.idx}" class="replyBoxContent" style="display:none">

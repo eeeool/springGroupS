@@ -60,7 +60,7 @@ create table board2Reply (
   board2Idx int not null,					/* 부모글(원본글)의 고유번호 */
   ref int not null,								/* 확장(원본 게시글의 고유번호) */
   re_step int not null,						/* 레벨에 따른 들여쓰기(계층) 부모댓글은 1, 대댓글의 경우는 부모re_step+1 처리 */
-  re_order int not null,					/* 댓글의 순서(부모댓글 1, 대댓글은 부모댓글보다 큰 re_order+1은 모두 re_order+1 처리 후 자신은 부모 re_order+1한다)	*/
+  re_order int not null,					/* 댓글의 순서(부모댓글 1, 대댓글은 부모댓글보다 큰 re_order+1은 모두 re_order+1 처리 후 자신은 부모 re_order+1한다)*/
   mid varchar(20) not null,				/* 댓글 올린이의 아이디 */
   nickName varchar(20) not null,	/* 댓글 올린이의 닉네임 */
   wDate    datetime default now(),/* 댓글 올린 날짜 */
