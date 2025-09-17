@@ -163,6 +163,14 @@ public class MessageController {
 			model.addAttribute("message", "게시글을 수정 실패");
 			model.addAttribute("url", "/board/boardUpdate?idx="+idx+"&pag="+pag+"&pageSize="+pageSize);
 		}
+		else if(msgFlag.equals("boardDeleteOk")) {
+			model.addAttribute("message", "게시글을 삭제하였습니다.");
+			model.addAttribute("url", "/board/boardList?&pag="+pag+"&pageSize="+pageSize);
+		}
+		else if(msgFlag.equals("boardDeleteNo")) {
+			model.addAttribute("message", "게시글 삭제 실패");
+			model.addAttribute("url", "/board/boardContent?idx="+idx+"&pag="+pag+"&pageSize="+pageSize);
+		}
 		
 		return "include/message";
 	}

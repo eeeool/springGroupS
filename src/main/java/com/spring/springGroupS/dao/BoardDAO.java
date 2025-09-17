@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.spring.springGroupS.vo.Board2ReplyVO;
 import com.spring.springGroupS.vo.BoardVO;
 
 public interface BoardDAO {
@@ -25,4 +26,16 @@ public interface BoardDAO {
 	void imgBackup(@Param("content") String content);
 
 	int setBoardUpdate(@Param("vo") BoardVO vo);
+
+	int setBoardDelete(@Param("idx") int idx);
+
+	List<Board2ReplyVO> getBoardReply(@Param("idx") int idx);
+
+	Board2ReplyVO getBoardParentReplyCheck(@Param("board2Idx") int board2Idx);
+
+	int setBoardReplyInput(@Param("replyVO") Board2ReplyVO replyVO);
+
+	int setReplyOrderUpdate(@Param("board2Idx") int board2Idx, @Param("re_order") int re_order);
+
+	int setBoardReplyDelete(@Param("idx") int idx);
 }
