@@ -9,16 +9,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.spring.springGroupS.vo.PageVO;
+
 @Controller
 public class MessageController {
 
 	@RequestMapping(value = "/message/{msgFlag}", method = RequestMethod.GET)
-	public String getMessage(Model model, HttpSession session,
-			@PathVariable String msgFlag,
+	public String getMessage(Model model, HttpSession session, PageVO pageVO, @PathVariable String msgFlag,
 			@RequestParam(name="mid", defaultValue = "", required = false) String mid,
-			@RequestParam(name="idx", defaultValue = "", required = false) String idx,
-			@RequestParam(name="pag", defaultValue = "1", required = false) String pag,
-			@RequestParam(name="pageSize", defaultValue = "10", required = false) String pageSize
+			@RequestParam(name="idx", defaultValue = "", required = false) String idx
+//			@RequestParam(name="pag", defaultValue = "1", required = false) String pag,
+//			@RequestParam(name="pageSize", defaultValue = "10", required = false) String pageSize
 		) {
 		
 		if(msgFlag.equals("hoewonInputOk")) {
@@ -156,20 +157,21 @@ public class MessageController {
 			model.addAttribute("url", "/board/boardInput");
 		}
 		else if(msgFlag.equals("boardUpdateOk")) {
-			model.addAttribute("message", "게시글을 수정하였습니다.");
-			model.addAttribute("url", "/board/boardList?pag="+pag+"&pageSize="+pageSize);
+			model.addAttribute("message", "게시글을 수정 하였습니다.");
+			if(pageVO.getSearch() == null) model.addAttribute("url", "/board/boardList?pag="+pageVO.getPag()+"&pageSize="+pageVO.getPageSize());
+			else model.addAttribute("url", "/board/boardSearchList?pag="+pageVO.getPag()+"&pageSize="+pageVO.getPageSize()+"&search="+pageVO.getSearch()+"&searchString="+pageVO.getSearchString());
 		}
 		else if(msgFlag.equals("boardUpdateNo")) {
-			model.addAttribute("message", "게시글을 수정 실패");
-			model.addAttribute("url", "/board/boardUpdate?idx="+idx+"&pag="+pag+"&pageSize="+pageSize);
+			model.addAttribute("message", "게시글 수정 실패~~");
+			model.addAttribute("url", "/board/boardUpdate?idx="+idx+"&pag="+pageVO.getPag()+"&pageSize="+pageVO.getPageSize()+"&search="+pageVO.getSearch()+"&searchString="+pageVO.getSearchString());
 		}
 		else if(msgFlag.equals("boardDeleteOk")) {
-			model.addAttribute("message", "게시글을 삭제하였습니다.");
-			model.addAttribute("url", "/board/boardList?&pag="+pag+"&pageSize="+pageSize);
+			model.addAttribute("message", "게시글을 삭제 하였습니다.");
+			model.addAttribute("url", "/board/boardList?pag="+pageVO.getPag()+"&pageSize="+pageVO.getPageSize());
 		}
 		else if(msgFlag.equals("boardDeleteNo")) {
-			model.addAttribute("message", "게시글 삭제 실패");
-			model.addAttribute("url", "/board/boardContent?idx="+idx+"&pag="+pag+"&pageSize="+pageSize);
+			model.addAttribute("message", "게시글 삭제 실패~~");
+			model.addAttribute("url", "/board/boardContent?idx="+idx+"&pag="+pageVO.getPag()+"&pageSize="+pageVO.getPageSize());
 		}
 		
 		return "include/message";

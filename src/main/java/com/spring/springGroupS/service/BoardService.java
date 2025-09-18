@@ -40,4 +40,6 @@ public interface BoardService {
 	void setReplyOrderUpdate(int board2Idx, int re_order);
 
 	int setBoardReplyDelete(int idx);
+
+	int setBoardReplyUpdateOk(Board2ReplyVO vo);
 }

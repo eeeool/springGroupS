@@ -38,4 +38,6 @@ public interface BoardDAO {
 	int setReplyOrderUpdate(@Param("board2Idx") int board2Idx, @Param("re_order") int re_order);
 
 	int setBoardReplyDelete(@Param("idx") int idx);
+
+	int setBoardReplyUpdateOk(Board2ReplyVO vo);
 }

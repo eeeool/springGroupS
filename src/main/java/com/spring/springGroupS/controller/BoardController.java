@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.spring.springGroupS.common.Pagination;
+import com.spring.springGroupS.service.AdminService;
 import com.spring.springGroupS.service.BoardService;
 import com.spring.springGroupS.vo.Board2ReplyVO;
 import com.spring.springGroupS.vo.BoardVO;
+import com.spring.springGroupS.vo.ComplaintVO;
 import com.spring.springGroupS.vo.PageVO;
 
 @Controller
@@ -29,6 +31,9 @@ public class BoardController {
 	
 	@Autowired
 	Pagination pagination;
+	
+	@Autowired
+	AdminService adminService; 
 	
 	// 게시글 목록 보기
 	@GetMapping("/boardList")
@@ -50,21 +55,28 @@ public class BoardController {
 		return "board/boardInput";
 	}
 	
-	// 게시글 DB에 등록하기
+//게시글 DB에 등록하기
 	@PostMapping("/boardInput")
 	public String boardInputPost(BoardVO vo) {
+		// 제목에 대하여 html태그를 사용할수 없도록처리....
+		String title = vo.getTitle();
+		title = title.replace("<", "&lt;");
+		title = title.replace(">", "&gt;");
+		vo.setTitle(title);		
+		
+		// 1.만약 content에 이미지를 등록하여 서버 파일시스템에 해당 그림이 저장되어 있다면, 저장된 그림(DB에 저장된 content필드)된그림만 board폴더에 따로 보관('/data/ckeditor'폴더에서 '/data/board'폴더로 복사)한다.
+		if(vo.getContent().indexOf("src=\"/") != -1) boardService.imgCheck(vo.getContent());
+		
+		// 2.이미지 작업(복사작업)을 모두 마치면, ckeditor폴더경로를 board폴더로 변경시킨다.
+		vo.setContent(vo.getContent().replace("/data/ckeditor/", "/data/board/"));
+		
+		// 3.content안의 그림에 대한 정리가 모두 끝나면 변경된 내용을 vo에 담아서 DB에 저장한다.
 		int res = boardService.setBoardInput(vo);
 		
-		// 1. 만약 content에 이미지를 등록하여 서버 파일시스템에 해당 그림이 저장되어 있다면, 저장된 그림(DB에 저장된 content필드)된 그림만 board폴더에 따로 보관(data/ckeditor 폴더에서 /data/board 폴더로 복사)한다.
-		if (vo.getContent().indexOf("src=\"/") != -1) boardService.imgCheck(vo.getContent());
-		
-		// 이미지 작업(복사잡업)을 모두 마치면, ckeditor 폴더를 board폴더로 변경시킨다.
-		vo.setContent(vo.getContent().replace("/data/ceeditor", "/data/board/"));
-		
-		// 3. content안의 그림에 대한 정리가 모두 끝나면 변경된 내용을 vo에 담아서 DB에 저장한다.
-		if (res != 0) return "redirect:/message/boardInputOK";
+		if(res != 0) return "redirect:/message/boardInputOk";
 		else return "redirect:/message/boardInputNo";
 	}
+
 	
 	// 글 내용 보기(조회수 증가: 중복방지)
 	@GetMapping("/boardContent")
@@ -201,27 +213,43 @@ public class BoardController {
 	
 	// 댓글 입력
 	@ResponseBody
-	@PostMapping("/boardReplyInput")
-	public int boardReplyInputPost(Board2ReplyVO replyVO) {
-		// 부모댓글은 ref는 원본글의 idx, re_step=1, re_order=1, 단, 부모댓글이 아닌 대댓글인경우는 마지막 부모댓글의 re_step+1, re_order+1처리
+	@PostMapping("/boardReplyParentInput")
+	public int boardReplyParentInputPost(Board2ReplyVO replyVO) {
+		// 부모댓글은 ref는 원본글의 idx(현재 별다른용도로 사용하지 않음)-확장고려, re_step=1, re_order=1, 단, 부모댓글이 아닌 '대댓글인경우'는 마지막 부모댓글의 re_step+1, re_order+1처리
+
+		// 원본글의 댓글(부모댓글)이 존재하는지 알아보고 있다면, 가장 나중에 올린 원본글의 댓글을 1개만 가져온다. - 새로 올리는 원본글의 댓글의 re_order을 결정하기위함이다.
 		Board2ReplyVO replyParentVO = boardService.getBoardParentReplyCheck(replyVO.getBoard2Idx());
-		replyVO.setRef(replyVO.getBoard2Idx());
+		replyVO.setRef(replyVO.getBoard2Idx());	// ref값은 원본글의 고유번호를 넣었다.(여기서는 사용하지 않았지만, 확장성을 위해서 만들어두었다)
 		
-		if(replyParentVO == null) {
-			replyVO.setRe_step(1);
-			replyVO.setRe_order(1);
-		}
-		else {
-			if(replyVO.getReplySw() != 1) { // 일반댓글창에서는 replySw가 1이 들어온다
-				replyVO.setRe_step(replyParentVO.getRe_step()+1); // 대댓글창에서 보낼때 수행한다.
-			}
-			else {
-				replyVO.setRe_step(1); // 일반댓글창에서 보낼때 수행한다.
-			}
-			replyVO.setRe_order(replyParentVO.getRe_order()+1);
-		}
+		// 원본글의 댓글은 모두 're_step=1' 로 셋팅한다.
+		replyVO.setRe_step(1);
+		
+		// 처음 올라가는 글이라면 자신의 re_order=1 로 셋팅, 그렇지 않으면 're_order'는 기존 원본글의 모든 댓글중 가장 마지막댓글의 're_order+1'로 지정한다.
+		if(replyParentVO == null) replyVO.setRe_order(1);
+		else replyVO.setRe_order(replyParentVO.getRe_order()+1);
 		
 		return boardService.setBoardReplyInput(replyVO);
+	}
+	
+	@ResponseBody
+	@PostMapping("/boardReplyInput")
+	public int boardReplyInputPost(Board2ReplyVO replyVO) {
+		// 대댓글(답변글)처리 ①자신의 re_step은 부모re_step+1 시켜주고, 
+		// ②부모댓글 re_order값보다 큰re_order은 re_order+1시켜주고,
+		// ③자신의 re_order는 부모re_order+1처리한다.
+		replyVO.setRe_step(replyVO.getRe_step()+1);	// 1번처리
+		boardService.setReplyOrderUpdate(replyVO.getBoard2Idx(), replyVO.getRe_order());	// 2번처리
+		replyVO.setRe_order(replyVO.getRe_order() + 1);	// 3번처리
+		
+		int res = boardService.setBoardReplyInput(replyVO);	// 모든 작업이 처리된 replyVO를 DB에 저장한다.
+		
+		return res;
+	}
+	
+	@ResponseBody
+	@PostMapping("/boardReplyUpdateOk")
+	public int boardReplyUpdateOkPost(Board2ReplyVO vo) {
+		return boardService.setBoardReplyUpdateOk(vo);
 	}
 	
 	// 대댓글 입력처리(부모댓글에 대한 댓글)
@@ -258,5 +286,17 @@ public class BoardController {
 	  model.addAttribute("pageVO", pageVO);
 		
 		return "board/boardSearchList";
+	}
+	
+	// 신고글 처리하기
+	@ResponseBody
+	@PostMapping("/boardComplaintInput")
+	public int boardComplaintInputPost(ComplaintVO vo) {
+		int res = 0;
+		res = adminService.setBoardComplaintInput(vo);
+		
+		if (res != 0) adminService.setBoardTableComplaintOk(vo.getPartIdx());
+		
+		return res;
 	}
 }

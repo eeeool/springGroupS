@@ -87,7 +87,7 @@
 		<div class="accordion"><b>회원 관리</b></div>
 		<div class="panel">
 			<p><a href="${ctp}/admin/member/adMemberList" target="adminContent">회원 리스트</a></p>
-			<p><a href="">신고 리스트</a></p>
+			<p><a href="${ctp}/admin/complaint/complaintList" target="adminContent">신고 리스트</a></p>
 		</div>
 	</div>
 	<div>
