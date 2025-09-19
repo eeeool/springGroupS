@@ -15,23 +15,19 @@ public class AdminServiceImpl implements AdminService {
 	AdminDAO adminDAO;
 
 	@Override
-	public int totUserCnt(int level) {
-		return adminDAO.totUserCnt(level) ;
-	}
-
-	@Override
 	public int setMemberLevelChange(int idx, int level) {
 		return adminDAO.setMemberLevelChange(idx, level);
 	}
 
 	@Override
-	public int memberLevelSelectChange(String idxSelectArray, int levelSelect) {
+	public int setMemberLevelSelectChange(String idxSelectArray, int levelSelect) {
 		String[] idxSelectArrays = idxSelectArray.split("/");
 		
 		int res = 0;
-		for (String idx : idxSelectArrays) {
+		for(String idx : idxSelectArrays) {
 			res = adminDAO.setMemberLevelChange(Integer.parseInt(idx), levelSelect);
 		}
+		
 		return res;
 	}
 
@@ -46,8 +42,8 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 	@Override
-	public List<ComplaintVO> getComplaintList(int startIndexNo, int pageSize) {
-		return adminDAO.getComplaintList(startIndexNo, pageSize);
+	public List<ComplaintVO> getComplaintList(int startIndexNo, int pageSize, String part) {
+		return adminDAO.getComplaintList(startIndexNo, pageSize, part);
 	}
 
 	@Override
@@ -70,7 +66,9 @@ public class AdminServiceImpl implements AdminService {
 		return adminDAO.setComplaintProcessOk(idx, complaintSw);
 	}
 
-
-
+	@Override
+	public int getComplaintTotRecCnt(String part) {
+		return adminDAO.getComplaintTotRecCnt(part);
+	}
 	
 }

@@ -1,5 +1,6 @@
 package com.spring.springGroupS.controller;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.spring.springGroupS.common.ARIAUtil;
@@ -50,18 +52,18 @@ import lombok.extern.slf4j.Slf4j;
 public class Study1Controller {
 	
 	@Autowired
-	JavaMailSender mailSender;
-	
-	@Autowired
-	BCryptPasswordEncoder passwordEncoder;
-	
-	@Autowired
 	Study1Service study1Service;
 	
 	@Autowired
 	StudyService studyService;
 	
-	// QueryString 방식을 통한 값 전달
+	@Autowired
+	BCryptPasswordEncoder passwordEncoder;
+	
+	@Autowired
+	JavaMailSender mailSender;
+	
+	// QueryString 방식을 통한 값의 전달
 	
 	//@RequestMapping(value = "/study1/mapping/test1", method = RequestMethod.GET)
 	@GetMapping("/mapping/menu")
@@ -101,14 +103,14 @@ public class Study1Controller {
 	public String test4Get(Model model, 
 			@RequestParam(name="mid") String id, 
 			@RequestParam(name="pwd") String passwd,
-			@RequestParam(name="name", defaultValue = "����", required = false) String name,
+			@RequestParam(name="name", defaultValue = "손님", required = false) String name,
 			@RequestParam(name="sex") int sex
 			) {
 		
 		String gender = "";
-		if(sex == 1 || sex == 3) gender = "�⑥��";
-		else if(sex == 2 || sex == 4) gender = "�ъ��";
-		else gender = "以���";
+		if(sex == 1 || sex == 3) gender = "남자";
+		else if(sex == 2 || sex == 4) gender = "여자";
+		else gender = "중성";
 		
 		model.addAttribute("mid", id);
 		model.addAttribute("pwd", passwd);
@@ -170,7 +172,7 @@ public class Study1Controller {
 	
 	/* ---------------------------------------------- */
 	
-	// Path Variable방식으로 값을 전달
+	// Path Variable방식으로의 값전달연습
 	@GetMapping("/mapping/test21/{mid}/{pwd}")
 	public String test21Get(Model model, @PathVariable String mid, @PathVariable String pwd) {
 		model.addAttribute("mid", mid);
@@ -208,7 +210,7 @@ public class Study1Controller {
 	
 	/* ====================================================== */
 	
-	// Post방식으로 값 전달
+	// Post방식에 의한 값의 전달
 	
 	//@GetMapping("/mapping/test31")
 	//@RequestMapping(value = "/mapping/test31", method = RequestMethod.POST)
@@ -243,7 +245,7 @@ public class Study1Controller {
 	
 	@GetMapping("/mapping/test33")
 	public String test33Get(Model model, String mid, HoewonVO vo) {
-		// 지금은 DB에서 회원정보를 가져와서 VO에 담아서 jsp로 넘기기.
+		// 아이디로 DB에서 회원정보를 가져와서 VO에 담아서 jsp로 넘겨준다.
 		vo.setMid(mid);
 		
 		model.addAttribute("vo", vo);
@@ -253,10 +255,10 @@ public class Study1Controller {
 	
 	@PostMapping("/mapping/test33")
 	public String test33Post(Model model, HoewonVO vo) {
-		// DB에 회원 정보를 등록처리한다.(회원가입처리)
+		// DB에 회원 정보를 저장시킨다.(회원가입처리)
 		
-		// 지금은 가입처리했다는 메시지를 띄우자.
-		model.addAttribute("message", vo.getMid() + "님 회원 가입되셨습니다.");
+		// 회원 가입후 메세지처리한다.
+		model.addAttribute("message", vo.getMid() + "님 회원 가입 되었습니다.");
 		model.addAttribute("url", "/study1/mapping/test33");
 		model.addAttribute("mid", vo.getMid());
 //		model.addAttribute("url","/study1/mapping/test33?mid="+vo.getMid());
@@ -265,10 +267,10 @@ public class Study1Controller {
 	
 	@PostMapping("/mapping/test34")
 	public String test34Post(Model model, HoewonVO vo) {
-		// DB에 회원 정보를 등록처리한다.(회원가입처리)
-		System.out.println("1.이곳에서 회원 정보를 DB에 등록처리하고 돌아옵니다.");
+	  // DB에 회원 정보를 저장시킨다.(회원가입처리)
+		System.out.println("1.이곳은 회원 정보를 DB에 저장처리하고 있습니다.");
 		
-		model.addAttribute("message","회원 가입되셨습니다.");
+		model.addAttribute("message","회원 가입 되었습니다.");
 		model.addAttribute("vo", vo);
 		
 		return "study1/mapping/test34";
@@ -276,7 +278,7 @@ public class Study1Controller {
 	
 	@GetMapping("/mapping/test35")
 	public String test35Get(Model model, HoewonVO vo) {
-		// 지금은 DB에서 회원정보를 가져와서 VO에 담아서 jsp로 넘기기.
+		// 아이디로 DB에서 회원정보를 가져와서 VO에 담아서 jsp로 넘겨준다.
 		// vo.setMid(mid);
 		
 		model.addAttribute("vo", vo);
@@ -286,11 +288,11 @@ public class Study1Controller {
 	
 	@PostMapping("/mapping/test35")
 	public String test35Post(Model model, HoewonVO vo) {
-		// 사용자가 입력한 아이디가 'a'로 시작하면 회원가입처리하는것으로 가정.
+		// 회원아이디의 첫글자가 'a'로 시작하는 회원만 가입처리하도록 한다.
 		
 		if(vo.getMid().substring(0, 1).equals("a")) {
-			// DB에 회원 정보를 등록처리한다.(회원가입처리)
-			System.out.println("2.이곳에서 회원 정보를 DB에 등록처리하고 돌아옵니다.");
+			// DB에 회원 정보를 저장시킨다.(회원가입처리)
+			System.out.println("2.이곳은 회원 정보를 DB에 저장처리하고 있습니다.");
 			return "redirect:/message/hoewonInputOk?mid="+vo.getMid();
 		}
 		else return "redirect:/message/hoewonInputNo";
@@ -298,13 +300,13 @@ public class Study1Controller {
 	
 	@GetMapping("/aop/aopMenu")
 	public String aopMenuGet() {
-		log.info("study1컨트롤러의 aopMenu메소드가 실행되었습니다.");
+		log.info("study1컨트롤러의 aopMenu메소드입니다.");
 		return "study1/aop/aopMenu";
 	}
 	
 	@GetMapping("/aop/test1")
 	public String aopTest1Get() {
-		log.info("study1컨트롤러의 test1메소드가 실행되었습니다.");
+		log.info("study1컨트롤러의 test1메소드입니다.");
 		
 		//Study1Service service = new Study1Service();
 		//service.getAopServiceTest1();
@@ -316,7 +318,7 @@ public class Study1Controller {
 	
 	@GetMapping("/aop/test2")
 	public String aopTest2Get() {
-		log.info("study1컨트롤러의 test2메소드가 실행되었습니다.");
+		log.info("study1컨트롤러의 test2메소드입니다.");
 		
 		study1Service.getAopServiceTest2();
 		
@@ -325,7 +327,7 @@ public class Study1Controller {
 	
 	@GetMapping("/aop/test3")
 	public String aopTest3Get() {
-		log.info("study1컨트롤러의 test3메소드가 실행되었습니다.");
+		log.info("study1컨트롤러의 test3메소드입니다.");
 		
 		study1Service.getAopServiceTest3();
 		
@@ -334,7 +336,7 @@ public class Study1Controller {
 	
 	@GetMapping("/aop/test4")
 	public String aopTest4Get() {
-		log.info("study1컨트롤러의 test4메소드가 실행되었습니다.");
+		log.info("study1컨트롤러의 test4메소드입니다.");
 		
 		study1Service.getAopServiceTest52();
 		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
@@ -345,7 +347,7 @@ public class Study1Controller {
 	
 	@GetMapping("/aop/test5")
 	public String aopTest5Get() {
-		// log.info("study1컨트롤러의 test5메소드가 실행되었습니다.");
+		// log.info("study1컨트롤러의 test5메소드입니다.");
 		
 		study1Service.getAopServiceTest1();
 		study1Service.getAopServiceTest2();
@@ -356,7 +358,7 @@ public class Study1Controller {
 		return "study1/aop/aopMenu";
 	}
 	
-	// XML 값 주입(setter) 처리
+	// XML 값 주입연습 메뉴
 	@GetMapping("/xml/xmlMenu")
 	public String xmlMenuGet() {
 		return "study1/xml/xmlMenu";
@@ -389,24 +391,25 @@ public class Study1Controller {
 		return "study1/xml/xmlTest1";
 	}
 	
-	@GetMapping("/xml/xmlTest2")
-	public String xmlTest2Get(Model model) {
-		AbstractApplicationContext context = new GenericXmlApplicationContext("xml/sungjuk.xml");
-		
-		List<SungjukVO> vos = new ArrayList<SungjukVO>();
-		SungjukVO vo = null;
-		for(int i=1; i<=3; i++) {
-			String str = "vo" + i;
-			vo = context.getBean(str, SungjukVO.class);
-			//vo = study1Service.getSungjukCalc(vo);
-			vos.add(vo);
-		}
-		
-		model.addAttribute("vos", vos);
-		
-		context.close();
-		return "study1/xml/xmlTest2";
-	}
+//	@GetMapping("/xml/xmlTest2")
+//	public String xmlTest2Get(Model model) {
+//		AbstractApplicationContext context = new GenericXmlApplicationContext("xml/sungjuk.xml");
+//		
+//		List<SungjukVO> vos = new ArrayList<SungjukVO>();
+//		SungjukVO vo = null;
+//		for(int i=1; i<=3; i++) {
+//			String str = "vo" + i;
+//			vo = context.getBean(str, SungjukVO.class);
+//			//vo = study1Service.getSungjukCalc(vo);
+//			study1Service.getSungjukCalc(vo);
+//			vos.add(vo);
+//		}
+//		
+//		model.addAttribute("vos", vos);
+//		
+//		context.close();
+//		return "study1/xml/xmlTest2";
+//	}
 	
 	@GetMapping("/xml/xmlTest3")
 	public String xmlTest3Get(Model model) {
@@ -432,35 +435,42 @@ public class Study1Controller {
 		return "study1/xml/xmlTest3";
 	}
 	
-	@GetMapping("/xml/xmlTest5")
-	public String xmlTest5Get(Model model) {
-		AbstractApplicationContext context = new GenericXmlApplicationContext("xml/bmi.xml");
-		
-		
-		for(int i=1; i<=50; i++) {
-			String str = "person" + i;
-			// vo = study1Service.getBmiCalc(vo);
-		}
-		
-		
-		context.close();
-		return "study1/xml/xmlTest5";
-	}
+//	@GetMapping("/xml/xmlTest5")
+//	public String xmlTest5Get(Model model) {
+//		AbstractApplicationContext context = new GenericXmlApplicationContext("xml/bmi.xml");
+//		
+//		List<BmiVO> vos = new ArrayList<BmiVO>();
+//		
+//		BmiVO vo = null;
+//		for(int i=1; i<=50; i++) {
+//			String str = "person" + i;
+//			vo = context.getBean(str, BmiVO.class);
+//			if(vo.getName().equals("")) break;
+//			// vo = study1Service.getBmiCalc(vo);
+//			study1Service.getBmiCalc(vo);
+//			vos.add(vo);
+//		}
+//		
+//		model.addAttribute("vos", vos);
+//		
+//		context.close();
+//		return "study1/xml/xmlTest5";
+//	}
 	
-	// restApi 폼
+	// restApi 폼보기
 	@GetMapping("/restApi/restApiForm")
 	public String restApiFormGet() {
 		return "study1/restApi/restApiForm";
 	}
 	
-	// REST API를 통한 자료 호출 처리1(X)
+	// REST API를 통한 일반 메세지 처리1(X)
 	@GetMapping("/restApi/test1/{message}")
 	public String restApiTest1Get(@PathVariable String message) {
 		System.out.println("message : " + message);
 		return "message : " + message;
 	}
 	
-	// REST API를 통한 자료 호출 처리2(O)
+	// REST API를 통한 일반 메세지 처리2(O)
 	@ResponseBody
 	@GetMapping("/restApi/test2/{message}")
 	public String restApiTest2Get(@PathVariable String message) {
@@ -468,13 +478,13 @@ public class Study1Controller {
 		return "message : " + message;
 	}
 	
-	// AJax 폼
+	// AJax 폼보기
 	@GetMapping("/ajax/ajaxForm")
 	public String ajaxFormGet() {
 		return "study1/ajax/ajaxForm";
 	}
 	
-	// 단일 값 처리
+	// 일반 값 처리
 	@ResponseBody
 	@GetMapping("/ajax/ajaxTest1")
 	public String ajaxTest1Get(int item) {
@@ -495,13 +505,13 @@ public class Study1Controller {
 		return "item = " + item;
 	}
 	
-	// AJax 객체값 처리
+	// AJax 객체 전송 폼보기
 	@GetMapping("/ajax/ajaxObjectForm")
 	public String ajaxObjectFormGet() {
 		return "study1/ajax/ajaxObjectForm";
 	}
 	
-	// ajax처리결과를 배열(String배열)로
+	// ajax처리결과를 배열(String배열)로 전송...
 	@ResponseBody
 	@PostMapping("/ajax/ajaxObject1")
 	public String[] ajaxObject1Post(String dodo) {
@@ -511,14 +521,14 @@ public class Study1Controller {
 		return studyService.getCityStringArray(dodo);
 	}
 	
-	// ajax처리결과를 객체배열(ArrayList<String>)로
+	// ajax처리결과를 객체배열(ArrayList<String>)로 전송...
 	@ResponseBody
 	@PostMapping("/ajax/ajaxObject2")
 	public ArrayList<String> ajaxObject2Post(String dodo) {
 		return studyService.getCityArrayList(dodo);
 	}
 	
-	// ajax처리결과를 객체배열(Map<Object, Object>)로
+	// ajax처리결과를 객체배열(Map<Object, Object>)로 전송...
 	@ResponseBody
 	@PostMapping("/ajax/ajaxObject3")
 	public Map<Object, Object> ajaxObject3Post(String dodo) {
@@ -529,7 +539,7 @@ public class Study1Controller {
 		return map;
 	}
 	
-	// 객체배열(arrayList)로
+	// 객체배열(arrayList)로 전송...
 	@PostMapping("/ajax/ajaxObject4")
 	public String ajaxObject4Post(Model model, String mid) {
 		ArrayList<UserVO> vos = studyService.getUserList(mid);
@@ -538,128 +548,204 @@ public class Study1Controller {
 		return "study1/ajax/ajaxObjectForm";
 	}
 	
-	// vo객체
+	// vo객체로 전송...
 	@ResponseBody
 	@PostMapping("/ajax/ajaxObject5")
 	public UserVO ajaxObject5Post(String mid) {
 		return studyService.getUserMidSearch(mid);
 	}
 	
-		// vo객체
-		@ResponseBody
-		@PostMapping("/ajax/ajaxObject6")
-		public ArrayList<UserVO> ajaxObject6Post(String mid) {
-			return studyService.getUserList(mid);
+	// vos객체로 전송...(완전일치)
+	@ResponseBody
+	@PostMapping("/ajax/ajaxObject6")
+	public ArrayList<UserVO> ajaxObject6Post(String mid) {
+		return studyService.getUserList(mid);
+	}
+	
+	// vos객체로 전송...(부분일치)
+	@ResponseBody
+	@PostMapping("/ajax/ajaxObject7")
+	public ArrayList<UserVO> ajaxObject7Post(String mid) {
+		return studyService.getUserListSearch(mid);
+	}
+	
+	// 암호화 연습 폼
+	@GetMapping("/password/passwordForm")
+	public String passwordFormGet() {
+		return "study1/password/passwordForm";
+	}
+	
+	// sha256암호화(ajax처리)
+	@ResponseBody
+	@PostMapping(value="/password/sha256", produces="application/text; charset=utf8")
+	public String sha256Post(String pwd) {
+		String salt = UUID.randomUUID().toString().substring(0, 8);
+		SecurityUtil security = new SecurityUtil();
+		String encPwd = security.encryptSHA256(salt + pwd);
+		pwd = "salt : " + salt + " / 암호화된 비밀번호 : " + encPwd;
+		return pwd;
+	}
+	
+	// aria암호화(ajax처리)
+	@ResponseBody
+	@PostMapping(value="/password/aria", produces="application/text; charset=utf8")
+	public String ariaPost(String pwd) throws InvalidKeyException, UnsupportedEncodingException {
+		String salt = UUID.randomUUID().toString().substring(0, 8);
+		
+		String encPwd = ARIAUtil.ariaEncrypt(salt + pwd);
+		String decPwd = ARIAUtil.ariaDecrypt(encPwd);
+		
+		pwd = "salt : " + salt + " / 암호화된 비밀번호 : " + encPwd + " / 복호화비번 : " + decPwd.substring(8);
+		return pwd;
+	}
+	
+	// BCryptPasswordEncoder암호화(ajax처리)
+	@ResponseBody
+	@PostMapping(value="/password/bCryptPassword", produces="application/text; charset=utf8")
+	public String bCryptPasswordPost(String pwd) throws InvalidKeyException, UnsupportedEncodingException {
+		String encPwd = passwordEncoder.encode(pwd);
+		
+		pwd = "암호화된 비밀번호 : " + encPwd;
+		return pwd;
+	}
+	
+	// 메일 작성폼 보기
+	@GetMapping("/mail/mailForm")
+	public String mailFormGet(Model model) {
+		List<MemberVO> memberVos = studyService.getMemberList();
+		model.addAttribute("memberVos", memberVos);
+		model.addAttribute("memberCnt", memberVos.size());
+		
+		return "study1/mail/mailForm";
+	}
+	
+	// 메일 보내기
+	@PostMapping("/mail/mailForm")
+	public String mailFormPost(MailVO vo, HttpServletRequest request) throws MessagingException {
+		String toMail = vo.getToMail();
+		String title = vo.getTitle();
+		String content = vo.getContent();
+		
+		// 메일 전송을 위한 객체 : MimeMessage(), MimeMessageHelper()
+		MimeMessage message = mailSender.createMimeMessage();
+		MimeMessageHelper messageHelper = new MimeMessageHelper(message, true, "UTF-8");
+		
+		// 메세지보관함에 저장되는 'content'변수안에 발신자의 필요한 정보를 추가로 담아준다.
+		content = content.replace("\n", "<br>");
+		content += "<br><hr><h3>SpringGroup에서 보냅니다.</h3><hr><br>";
+		content += "<p><img src=\"cid:main.jpg\" width='500px'></p>";
+		content += "<p>방문하기 : <a href='http://49.142.157.251:9090/cjgreen'>springGroup</a></p>";
+		content += "<hr>";
+		messageHelper.setTo(toMail);
+		messageHelper.setSubject(title);
+		messageHelper.setText(content, true);
+		
+		// FileSystemResource file = new FileSystemResource("D:\\springGroup\\springframework\\works\\springGroupS\\src\\main\\webapp\\resources\\images\\main.jpg");
+		FileSystemResource file = new FileSystemResource(request.getSession().getServletContext().getRealPath("/resources/images/main.jpg"));
+		messageHelper.addInline("main.jpg", file);
+		
+		// 첨부파일 보내기
+		file = new FileSystemResource(request.getSession().getServletContext().getRealPath("/resources/images/2.jpg"));
+		messageHelper.addAttachment("2.jpg", file);
+		file = new FileSystemResource(request.getSession().getServletContext().getRealPath("/resources/images/3.jpg"));
+		messageHelper.addAttachment("3.jpg", file);
+		
+		// 메일 전송하기
+		mailSender.send(message);
+		
+		return "redirect:/message/mailSendOk";
+	}
+	
+	// 파일 업로드폼 보기
+	@GetMapping("/fileUpload/fileUploadForm")
+	public String fileUploadFormGet(Model model, HttpServletRequest request) {
+		String realPath = request.getSession().getServletContext().getRealPath("/resources/data/fileUpload");
+		
+		String[] files = new File(realPath).list();
+		
+		for(String file : files) {
+			System.out.println("file : " + file);
 		}
 		
-		// vo객체
-		@ResponseBody
-		@PostMapping("/ajax/ajaxObject7")
-		public ArrayList<UserVO> ajaxObject7Post(String mid) {
-			return studyService.getUserListSearch(mid);
+		model.addAttribute("files", files);
+		model.addAttribute("fileCount", files.length);
+		
+		return "study1/fileUpload/fileUploadForm";
+	}
+	
+	// 1개 파일 업로드 처리
+	@PostMapping("/fileUpload/fileUploadForm")
+	public String fileUploadFormPost(MultipartFile fName, String mid) {
+		int res = studyService.setFileUpload(fName, mid);
+		
+		if(res != 0) return "redirect:/message/fileUploadOk";
+		else return "redirect:/message/fileUploadNo";
+	}
+	
+	// 1개 파일 삭제 처리
+	@ResponseBody
+	@PostMapping("/fileUpload/fileDelete")
+	public int fileDeletePost(String file, HttpServletRequest request) {
+		String realPath = request.getSession().getServletContext().getRealPath("/resources/data/fileUpload/");
+		
+		int res = 0;
+		File fName = new File(realPath + file);
+		
+		if(fName.exists()) {
+			fName.delete();
+			res = 1;
 		}
 		
-		@GetMapping("/password/passwordForm")
-		public String passwordFormGet() {
-			return "study1/password/passwordForm";
-		}
+		return res;
+	}
+	
+	// 전체 파일 삭제 처리
+	@ResponseBody
+	@PostMapping("/fileUpload/fileAllDelete")
+	public int fileAllDeletePost(HttpServletRequest request) {
+		String realPath = request.getSession().getServletContext().getRealPath("/resources/data/fileUpload/");
 		
-		// sha256암호화(ajax 처리)
-		@ResponseBody()
-		@PostMapping("/password/sha256")
-		public String sha256Post(String pwd) {
-			String salt = UUID.randomUUID().toString().substring(0,8);
-			SecurityUtil security = new SecurityUtil();
-			String encPwd = security.encryptSHA256(salt+pwd);
-			pwd = "salt: " + salt + " / ���명���� 鍮�諛�踰���: " + encPwd;
-			return pwd;
-		}
+		int res = 0;
+		File folder = new File(realPath);
+		if(!folder.exists()) return res;
 		
-		// aria암호화(ajax 처리)
-		@ResponseBody()
-		@PostMapping(value="/password/aria", produces="application/text; charset=utf8")
-		public String ariaPost(String pwd) throws InvalidKeyException, UnsupportedEncodingException {
-			String salt = UUID.randomUUID().toString().substring(0,8);
-			
-			String encPwd = ARIAUtil.ariaEncrypt(salt + pwd);
-			String decPwd = ARIAUtil.ariaDecrypt(encPwd);
-			
-			pwd = "salt: " + salt + " / ���명���� 鍮�諛�踰���: " + encPwd + " / 蹂듯�명�� 鍮�踰�: " + decPwd.substring(8);
-			return pwd;
-		}
+		File[] files = folder.listFiles();
 		
-		// BCryptPasswordEncoder암호화(ajax 처리)
-		@ResponseBody()
-		@PostMapping(value="/password/bCryptpassword", produces="application/text; charset=utf8")
-		public String bCryptPasswordPost(String pwd) throws InvalidKeyException, UnsupportedEncodingException {
-			
-			String encPwd = passwordEncoder.encode(pwd);
-			
-			System.out.println("encPwd : " + encPwd);
-			
-			pwd = "���명���� 鍮�諛�踰���: " + encPwd;
-			return pwd;
-		}
-		
-		// 주소록
-		@GetMapping("/mail/mailForm")
-		public String mailFormGet(Model model) {			
-			List<MemberVO> memberVos = studyService.getAddressList();
-		
-			model.addAttribute("memberVos", memberVos);	
-			
-			return "study1/mail/mailForm";
-		} 
-		
-		// 메일보내기
-		@PostMapping("/mail/mailForm")
-		public String mailFormPost(MailVO vo, HttpServletRequest request) throws MessagingException {
-			String toMail = vo.getToMail();
-			String title = vo.getTitle();
-			String content = vo.getContent();
-			
-			// 메일 전송을 위한 객체 : MimeMessage(), MimeMessageHelper()
-			MimeMessage message = mailSender.createMimeMessage();
-			MimeMessageHelper messageHelper = new MimeMessageHelper(message, true, "UTF-8");
-			
-			// 메일보낼 내용을 content 변수에 받아서 내용을 추가로 보내준다.
-			content = content.replace("\n", "<br>");
-			content += "<br><hr><h3>SpringGroup에서 보내드렸습니다.</h3><hr><br>";
-			content += "<p><img src=\"cid:image.jpg\" width='500px'></p>";
-			content += "<p>방문하기: <a href='http://49.142.157.251:9090/cjgreen'>springGroup</a></p>";
-			content += "<hr>";
-			messageHelper.setTo(toMail);
-			messageHelper.setSubject(title);
-			messageHelper.setText(content, true);
-			
-			/*FileSystemResource file = new FileSystemResource("D:\\springGroup\\springframework\\works\\springGroupS\\src\\main\\webapp\\resources\\images\\image.jpg");*/
-			FileSystemResource file = new FileSystemResource(request.getSession().getServletContext().getRealPath("/resources/images/image.jpg"));
-			messageHelper.addInline("image.jpg", file);
-			
-			// 첨부파일 보내기
-			file = new FileSystemResource(request.getSession().getServletContext().getRealPath("/resources/images/2.jpg"));
-			messageHelper.addAttachment("2.jpg", file);
-			file = new FileSystemResource(request.getSession().getServletContext().getRealPath("/resources/images/3.jpg"));
-			messageHelper.addAttachment("3.jpg", file);
-			
-			// 메일보내기
-			mailSender.send(message);
-			
-			return "redirect:/message/mailSendOk";
-		}
-		
-			// 파일업로드
-			@GetMapping("/fileUpload/fileUploadForm")
-			public String fileUploadFormGet() {			
-				return "study1/fileUpload/fileUploadForm";
+		if(files.length != 0) {
+			for(File file : files) {
+				if(!file.isDirectory()) file.delete();
 			}
-			
-			// 파일업로드
-			@PostMapping("/fileUpload/fileUploadForm")
-			public String fileUploadFormPost(MultipartFile fName, String mid) {			
-				int res = studyService.setFileUpload(fName, mid);
-				
-				if (res != 0) return "redirect:/message/fileUploadOk";
-				else return "redirect:/message/fileUploadNo";
-			}
+			res = 1;
+		}
+		return res;
+	}
+	
+	// 멀티 파일 업로드 폼보기
+	@GetMapping("/fileUpload/multiFileUpload")
+	public String multiFileUploadGet() {
+		return "study1/fileUpload/multiFileUploadForm";
+	}
+	
+	// 멀티 파일 업로드 처리하기
+	@PostMapping("/fileUpload/multiFileUpload")
+	public String multiFileUploadPost(MultipartHttpServletRequest mFile, String mid) {
+		int res = studyService.setMultiFileUpload(mFile, mid);
+		
+		if(res != 0) return "redirect:/message/multiFileUploadOk";
+		else return "redirect:/message/multiFileUploadNo";
+	}
+	
+	// sweetAlert 폼보기
+	@GetMapping("/sweetAlert/sweetAlertForm")
+	public String sweetAlertFormGet() {
+		return "study1/sweetAlert/sweetAlertForm";
+	}
+	
+	@ResponseBody
+	@PostMapping("/sweetAlert/ajaxSweet")
+	public int ajaxSweetPost(int idx) {
+		int res = idx + 100;
+		return res;
+	}
+	
 }

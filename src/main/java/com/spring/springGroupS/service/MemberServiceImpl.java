@@ -10,17 +10,21 @@ import com.spring.springGroupS.vo.MemberVO;
 
 @Service
 public class MemberServiceImpl implements MemberService {
+
 	@Autowired
 	MemberDAO memberDAO;
 
 	@Override
 	public MemberVO getMemberIdCheck(String mid) {
+//		MemberVO vo = memberDAO.getMemberIdCheck(mid);
+//		System.out.println("vo : " + vo);
+//		return vo;
 		return memberDAO.getMemberIdCheck(mid);
 	}
 
 	@Override
-	public MemberVO getMemberNickNameCheck(String nickName) {
-		return memberDAO.getMemberNickNameCheck(nickName);
+	public MemberVO getMemberNickCheck(String nickName) {
+		return memberDAO.getMemberNickCheck(nickName);
 	}
 
 	@Override
@@ -28,10 +32,10 @@ public class MemberServiceImpl implements MemberService {
 		return memberDAO.setMemberJoin(vo);
 	}
 
-	@Override
-	public void setLastDateUpdate(String mid) {
-		memberDAO.setLastDateUpdate(mid);
-	}
+//	@Override
+//	public void setLastDateUpdate(String mid) {
+//		memberDAO.setLastDateUpdate(mid);
+//	}
 
 	@Override
 	public int setMemberPwdChange(String mid, String pwd) {
@@ -39,8 +43,28 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
+	public void setMemberTodayCntClear(String mid) {
+		memberDAO.setMemberTodayCntClear(mid);
+	}
+
+	@Override
+	public void setMemberInforUpdate(String mid, int point) {
+		memberDAO.setMemberInforUpdate(mid, point);
+	}
+
+	@Override
 	public List<MemberVO> getmemberIdSearch(String email) {
 		return memberDAO.getmemberIdSearch(email);
+	}
+
+	@Override
+	public void setMemberInforUpdateMinus(String mid) {
+		memberDAO.setMemberInforUpdateMinus(mid);
+	}
+
+	@Override
+	public void setMemberLevelUp(String mid) {
+		memberDAO.setMemberLevelUp(mid);
 	}
 
 	@Override
@@ -63,4 +87,9 @@ public class MemberServiceImpl implements MemberService {
 		return memberDAO.getTotRecCnt();
 	}
 
+	@Override
+	public List<MemberVO> getMemberLevelCount(int level) {
+		return memberDAO.getMemberLevelCount(level);
+	}
+	
 }

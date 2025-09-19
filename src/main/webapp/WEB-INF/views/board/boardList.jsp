@@ -68,9 +68,7 @@
 		          <c:if test="${vo.hour_diff <= 24}"><img src="${ctp}/images/new.gif" /></c:if>
 	          </c:if>
           </c:if>
-          <c:if test="${vo.complaint == 'HI'}">
-          	<div>${vo.title} - <font color="red"><b>현재 글은 신고중입니다.</b></font></div>
-          </c:if>
+        <c:if test="${vo.complaint == 'HI'}"><span class="badge bg-danger">신고중</span></c:if>
         </td>
         <td>${vo.nickName}</td>
         <td>

@@ -7,15 +7,14 @@ import org.apache.ibatis.annotations.Param;
 import com.spring.springGroupS.vo.ComplaintVO;
 
 public interface AdminDAO {
-	int totUserCnt(int level);
 
 	int setMemberLevelChange(@Param("idx") int idx, @Param("level") int level);
 
 	int setBoardComplaintInput(@Param("vo") ComplaintVO vo);
 
-	int setBoardTableComplaintOk(@Param("partIdx") int partIdx);
+	void setBoardTableComplaintOk(@Param("partIdx") int partIdx);
 
-	List<ComplaintVO> getComplaintList(@Param("startIndexNo") int startIndexNo, @Param("pageSize") int pageSize);
+	List<ComplaintVO> getComplaintList(@Param("startIndexNo") int startIndexNo, @Param("pageSize") int pageSize, @Param("part") String part);
 
 	ComplaintVO getComplaintSearch(@Param("partIdx") int partIdx);
 
@@ -24,4 +23,7 @@ public interface AdminDAO {
 	int setComplaintProcess(@Param("partIdx") int partIdx, @Param("flag") String flag);
 
 	int setComplaintProcessOk(@Param("idx") int idx, @Param("complaintSw") String complaintSw);
+
+	int getComplaintTotRecCnt(@Param("part") String part);
+
 }

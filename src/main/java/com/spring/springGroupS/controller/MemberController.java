@@ -1,5 +1,6 @@
 package com.spring.springGroupS.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,8 +30,9 @@ import com.spring.springGroupS.vo.MemberVO;
 @Controller
 @RequestMapping("/member")
 public class MemberController {
+	
 	@Autowired
-	GuestService guestService;
+	MemberService memberService;
 	
 	@Autowired
 	ProjectProvide projectProvide;
@@ -39,12 +41,12 @@ public class MemberController {
 	BCryptPasswordEncoder passwordEncoder;
 	
 	@Autowired
-	MemberService memberService;
+	GuestService guestService;
 	
 	// 로그인 폼
 	@GetMapping("/memberLogin")
 	public String memberLoginGet(HttpServletRequest request) {
-		// 쿠키를 검색해서 cMid가 있을때 가져와서 로그인창의 아이디 입력박스에 뿌려준다.
+		// 쿠키를 검색해서 cMid가 있을때 가져와서 로그인창의 아이디입력박스에 뿌려준다.
 		Cookie[] cookies = request.getCookies();
 
 		if(cookies != null) {
@@ -106,15 +108,35 @@ public class MemberController {
 			}
 			
 			// 3. 기타처리(DB에 처리해야할것들(방문카운트, 포인트,... 등)
-			// 3-1. 기타처리 : 오늘 첫방문이면 todayCnt = 0
-			
-			
-			// 3-2. 기타처리 : 방문카운트로 10포인트 증정(단, 1일 50포인트까지만 제한처리)
-			
-			// 최종 방문일 업데이트
-			memberService.setLastDateUpdate(mid);
+			// 3-1. 기타처리 : 준회원을 정회원 등업처리.. 
+			//	(1) 준회원의 정회원 등업조건 : 방명록에 3회이상 글쓰기, 회원로그인 4일 이상
+			if(vo.getLevel() == 3 && vo.getVisitCnt() > 3) {
+				int guestCnt = guestService.getMemberSearch(mid, vo.getNickName(), vo.getName());
+				if(guestCnt >= 3) memberService.setMemberLevelUp(mid);
+			}
 
+			// (2) 오늘 첫방문이면 todayCnt = 0, 오늘 첫방문인지를 체크히가위한 변수 todaySw(1은첫방문, 0은 두번이상방문)
+			int todaySw = 0;
+			if(!LocalDateTime.now().toString().substring(0,10).equals(vo.getLastDate().substring(0,10))) {
+				memberService.setMemberTodayCntClear(mid);
+				vo.setTodayCnt(0);
+				todaySw = 1;
+			}
 			
+			// 3-2. 기타처리 : 
+			// (2) 정회원 이상부터는 방문카운트로 10포인트 증정(단, 방문포인트는 정회원 이상부터 지급하기로하고, 1일 50포인트까지만 제한처리)
+			if(vo.getLevel() != 3) {
+				int point = vo.getTodayCnt() < 5 ? 10 : 0;
+				memberService.setMemberInforUpdate(mid, point);
+			}
+			else memberService.setMemberInforUpdate(mid, 0);
+			
+			// 앞에서 모든 회원에 대하여 무조건 방문시 총방문횟수와 오늘 방문횟수를 증가시켰기에, 준회원인경우는 같은날 다시 방문했을경우는 '총방문횟수/오늘방문횟수'를 각각 1씩, 방문포인트는 -10을 뺀다.
+			// 따라서 방문카운트 4일 이상이되면 정회원으로 등업될수 있는 조건이 된다.
+			if(vo.getLevel() == 3 && todaySw == 0) memberService.setMemberInforUpdateMinus(mid);
+			
+			// 최종 방문일 업데이트처리(앞에서 처리했기에 삭제했다.)
+			//memberService.setLastDateUpdate(mid);
 			
 			return "redirect:/message/memberLoginOk?mid="+mid;
 		}
@@ -123,8 +145,7 @@ public class MemberController {
 		}
 	}
 	
-	//로그아웃 처리
-
+	// 로그아웃 처리
 	@GetMapping("/memberLogout")
 	public String memberLogoutGet(HttpSession session) {
 		String mid = (String) session.getAttribute("sMid");
@@ -132,57 +153,57 @@ public class MemberController {
 		
 		return "redirect:/message/memberLogout?mid="+mid;
 	}
-
 	
-	//회원 가입폼 보여주기
+	// 회원 가입폼 보여주기
 	@GetMapping("/memberJoin")
 	public String memberJoinGet() {
 		return "member/memberJoin";
 	}
 	
-	//회원 가입 처리(회원 사진을 업로드 후, DB에 회원 정보를 저장)
+	// 회원 가입 처리(회원 사진을 업로드후, DB에 회원 정보를 저장)
 	@PostMapping("/memberJoin")
 	public String memberJoinPost(MultipartFile fName, MemberVO vo) {
-		// 아이디/닉네임 중복체크
-		if (memberService.getMemberIdCheck(vo.getMid()) != null) return "redirect:/message/idCheckNo";
-		if (memberService.getMemberNickNameCheck(vo.getNickName()) != null) return "redirect:/message/nickNameCheckNo";
 		
+		// '아이디/닉네임' 중복체크
+		if(memberService.getMemberIdCheck(vo.getMid()) != null) return "redirec:/message/idCheckNo";
+		if(memberService.getMemberNickCheck(vo.getNickName()) != null) return "redirec:/message/nickNameCheckNo";
+
 		// 비밀번호 암호화
-	  vo.setPwd(passwordEncoder.encode(vo.getPwd()));
-	  
-	  // 회원 사진 등록처리(회원이 사진을 업로드 하지 않았을때는 'noimage.jpg'로 DB에 저장한다.)
-	  // 회원 사진을 등록하였을 경우는, 사진을 서버에 저장시키고, 저장시킨파일명을 DB에 저장처리한다.
-	  // System.out.println("photo: " + fName.getOriginalFilename());
-	  if (fName.getOriginalFilename().equals("")) vo.setPhoto("noimage.jpg");
-	  else vo.setPhoto(projectProvide.fileUpload(fName, vo.getMid(), "member"));
-	  	
-	  int res = memberService.setMemberJoin(vo);
-	  
-	  if (res != 0)	return "redirect:/message/memberJoinOk";
-	  else return "redirect:/message/memberJoinNo";
+		vo.setPwd(passwordEncoder.encode(vo.getPwd()));
+		
+		// 회원 사진 등록처리(회원이 사진을 업로드 하지 않았을시는 photo필드를 'noimage.jpg'로 DB에 저장한다.
+		// 회원 사진을 등록하였을경우는, 사진을 서버에 저장시키고, 저장시킨파일명을 DB에 저장처리한다.
+		//System.out.println("fName : " + fName.getOriginalFilename());
+		if(fName.getOriginalFilename().equals("")) vo.setPhoto("noimage.jpg");
+		else vo.setPhoto(projectProvide.fileUpload(fName, vo.getMid(), "member"));
+		
+		int res = memberService.setMemberJoin(vo);
+		
+		if(res != 0) return "redirect:/message/memberJoinOk";
+		else return "redirect:/message/memberJoinNo";
 	}
 	
-	// 아이디 중복 체크
-	@PostMapping("/idCheck")
+	// 아이디 중복체크처리
 	@ResponseBody
-	public MemberVO MemberIdCheckPost(@RequestParam("mid") String mid) {	
+	@PostMapping("/memberIdCheck")
+	public MemberVO memberIdCheckGet(String mid) {
 		return memberService.getMemberIdCheck(mid);
 	}
 	
-	// 닉네임 중복 체크
-	@PostMapping("/nickNameCheck")
+	// 닉네임 중복체크처리
 	@ResponseBody
-	public MemberVO NumberNickNameCheckPost(@RequestParam("nickName") String nickName) {
-		return memberService.getMemberNickNameCheck(nickName);
+	@PostMapping("/memberNickCheck")
+	public MemberVO memberNickCheckGet(String nickName) {
+		return memberService.getMemberNickCheck(nickName);
 	}
 	
-	// 회원 가입시 이메일로 인증번호 전송하기
+	// 회원가입시 이메일로 인증번호 전송하기
 	@ResponseBody
 	@PostMapping("/memberEmailCheck")
 	public int memberEmailCheckPost(String email, HttpSession session) throws MessagingException {
-		String emailKey = UUID.randomUUID().toString().substring(0,8);
+		String emailKey = UUID.randomUUID().toString().substring(0, 8);
 		
-		// 이메일 인증키를 세션에 저장시켜준다. (2분안에 인증하지 않으면 다시 발행해야함)
+		// 이메일 인증키를 세션에 저장시켜둔다.(2분안에 인증하지 않으면 다시 발행해야함...)
 		session.setAttribute("sEmailKey", emailKey);
 		
 		projectProvide.mailSend(email, "이메일 인증키입니다.", "이메일 인증키 : " + emailKey);
@@ -202,20 +223,20 @@ public class MemberController {
 		return 0;
 	}
 
-	// 인증번호 입력 제한시간(2분)안에 인증확인하지 못하면 발행한 인증번호 삭제하기
+	//인증번호 입력 제한시간(2분)안에 인증확인하지 못하면 발행한 인증번호 삭제하기
 	@ResponseBody
 	@PostMapping("/memberEmailCheckNo")
 	public void memberEmailCheckNoPost(HttpSession session) {
 	   session.removeAttribute("sEmeilKey");
 	}
 	
-	// 로그인 완료시 회원방으로 이동
+	// 로그인 완료시 회원방으로 이동처리
 	@GetMapping("/memberMain")
 	public String memberMainGet(Model model, HttpSession session) {
 		String mid = (String) session.getAttribute("sMid");
 		MemberVO mVo = memberService.getMemberIdCheck(mid);
 		
-		// 방명록의 올린 글의 수
+		// 방명록에 올린 글의 수
 		int guestCnt = guestService.getMemberSearch(mid, mVo.getNickName(), mVo.getName());
 		model.addAttribute("guestCnt", guestCnt);
 		model.addAttribute("mVo", mVo);
@@ -235,16 +256,16 @@ public class MemberController {
 	@PostMapping("/memberPwdCheck")
 	public String memberPwdCheckPost(String mid, String pwd) {
 		MemberVO vo = memberService.getMemberIdCheck(mid);
-		if (passwordEncoder.matches(pwd, vo.getPwd())) return "1";
+		if(passwordEncoder.matches(pwd, vo.getPwd())) return "1";
 		return "0";
 	}
 	
-	// 회원 비밀번호 변경
+	// 회원 비밀번호 변경처리
 	@PostMapping("/memberPwdChange")
 	public String memberPwdChangePost(String mid, String newPwd) {
 		int res = memberService.setMemberPwdChange(mid, passwordEncoder.encode(newPwd));
-		if (res != 0) return "redirect:/message/passwordChangeOk";
-		return "redirect:/message/passwordChangeNo";
+		if(res != 0) return "redirect:/message/passwordChangeOk";
+		else return "redirect:/message/passwordChangeNo";
 	}
 	
 	// 아이디 찾기 폼보기
@@ -272,7 +293,7 @@ public class MemberController {
 	@PostMapping("/memberUpdate")
 	public String memberUpdatePost(MultipartFile fName, MemberVO vo, HttpSession session) {
 		String nickName = (String) session.getAttribute("sNickName");
-		if(memberService.getMemberNickNameCheck(vo.getNickName()) != null && !nickName.equals(vo.getNickName())) {
+		if(memberService.getMemberNickCheck(vo.getNickName()) != null && !nickName.equals(vo.getNickName())) {
 			return "redirect:/message/nickCheckNo?mid="+vo.getMid();
 		}
 		
@@ -290,34 +311,37 @@ public class MemberController {
 		else return "redirect:/message/memberUpdateNo?mid="+vo.getMid();
 	}
 
-	// 회원 탈퇴 신청
+	// 회원 탈퇴 신청...
 	@ResponseBody
 	@PostMapping("/userDelete")
 	public String userDeletePost(HttpSession session) {
 		String mid = (String) session.getAttribute("sMid");
 		int res = memberService.setUserDelete(mid);
 		
-		if (res != 0) {
+		if(res != 0) {
 			session.invalidate();
 			return "1";
 		}
 		else return "0";
 	}
-	
-	// 회원 리스트 보기
+
+	// 회원 리스트보기
 	@GetMapping("/memberList")
 	public String memberListGet(Model model,
-		@RequestParam(name="pag", defaultValue = "1", required = false) int pag,
-		@RequestParam(name="pagSize", defaultValue = "10", required = false) int pagSize,
-		@RequestParam(name="level", defaultValue = "99", required = false) int level
-	) {
+			@RequestParam(name="pag", defaultValue = "1", required = false) int pag,
+			@RequestParam(name="pageSize", defaultValue = "10", required = false) int pageSize,
+			@RequestParam(name="level", defaultValue = "99", required = false) int level
+		) {
 		List<MemberVO> vos = memberService.getMemberList(0, 100, level);
 		
 		model.addAttribute("pag", pag);
-		model.addAttribute("pagSize", pagSize);
+		model.addAttribute("pageSize", pageSize);
 		
 		model.addAttribute("vos", vos);
 		model.addAttribute("level", level);
+		
 		return "member/memberList";
 	}
+	
+	
 }
