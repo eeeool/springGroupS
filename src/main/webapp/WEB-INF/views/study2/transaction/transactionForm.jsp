@@ -104,11 +104,8 @@
     		url  : "${ctp}/study2/transaction/transaction2",
     		data : query,
     		success:function(res) {
-    			if(res == "1") {
-	    			alert("등록 OK");
-	    			location.reload();
-    			}
-    			else alert("등록 실패~~" + res);
+    			alert(res);
+    			location.reload();
     		},
     		error : function() {
     			alert("전송오류!(두번째 테이블을 확인해보세요)");
