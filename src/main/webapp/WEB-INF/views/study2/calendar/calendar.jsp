@@ -8,6 +8,14 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<jsp:include page="/WEB-INF/views/include/bs5.jsp" />
 	<title>calendar.jsp</title>
+	
+  <style>
+   td.today {
+     background-color: pink;
+     color: #fff;
+     font-weight: bolder;
+   }
+  </style>
 </head>
 <jsp:include page="/WEB-INF/views/include/nav.jsp" />
 <jsp:include page="/WEB-INF/views/include/slide2.jsp" />
@@ -44,15 +52,20 @@
 				</c:forEach>
 				
 				<!-- 달력 출력 -->
-				<c:forEach var="i" begin="${1}" end="${lastDay}" varStatus="st">
-					<td>
-						${st.count}
-					</td>
-					<c:if test="${cnt % 7 == 0}">
-						</tr><tr>
-					</c:if>
-					<c:set var="cnt" value="${cnt+1}" />
-				</c:forEach>
+		    <c:forEach var="i" begin="${1}" end="${lastDay}" varStatus="st">
+          <c:set var="todaySw" value="${yy==toYear && mm==toMonth && st.count==toDay ? 1 : 0}"/>
+          <td ${todaySw == 1 ? 'class=today' : ''}>
+            <c:choose>
+              <c:when test="${cnt % 7 == 1}"><font color="red">${st.count}</font></c:when>
+              <c:when test="${cnt % 7 == 0}"><font color="blue">${st.count}</font></c:when>
+              <c:otherwise>${st.count}</c:otherwise>
+            </c:choose>
+          </td>
+          <c:if test="${cnt % 7 == 0}">
+            </tr><tr>
+          </c:if>
+          <c:set var="cnt" value="${cnt + 1}"/>
+        </c:forEach>
 				
 				<c:if test="${cnt % 7 == 0 }">
 					<c:forEach begin="${nextStartWeek}" end="7" varStatus="st">

@@ -10,7 +10,7 @@
 	<!-- 데이터베이스 연동을 위한 설정(jdbc 설정) -->
 	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-		<property name="url" value="jdbc:mysql://localhost:3306/springgroup"></property>
+		<property name="url" value="jdbc:mysql://localhost:3306/springgroup?allowMultiQueries=true" />
 		<property name="username" value="root" />
 		<property name="password" value="1234" />
 	</bean>
@@ -45,5 +45,10 @@
 	 				<prop key="mail.debug">true</prop>
 	 			</props>
 	 		</property>
+	 </bean>
+	 
+	 <!-- Transaction(트랜잭션) 처리를 위한 detasource 연결 설정 -->
+	 <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+	 	<property name="dataSource" ref="dataSource"></property>
 	 </bean>
 </beans>
