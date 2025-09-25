@@ -15,9 +15,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.spring.springGroupS.service.Study2Service;
+import com.spring.springGroupS.vo.ChartVO;
+import com.spring.springGroupS.vo.CrimeVO;
 import com.spring.springGroupS.vo.TransactionVO;
 
 @Controller
@@ -121,7 +124,6 @@ public class Study2Controller {
 		study2Service.setTransactionUser2Input(vo);
 		
 		return "redirect:/message/transactionUserInputOk";
-
 	}
 	
 	// 회원가입처리를 한번에 처리하기
@@ -147,4 +149,75 @@ public class Study2Controller {
 			return "두개 테이블에 모두 저장되었습니다.";
 		}
 	}
+	
+	// 공공데이터 API(전국 강력범죄현황)
+	@GetMapping("/dataApi/dataApiForm1")
+	public String dataApiForm1Get(Model model) {
+		return "study2/dataApi/dataApiForm1";
+	}
+	
+	// 공공데이터 API(강력범죄 발생현황 년도별 저장처리)
+	@ResponseBody
+	@PostMapping("/dataApi/saveCrimeCheck")
+	public void saveCrimeCheckPost(CrimeVO vo) {
+		study2Service.setSaveCrimeCheck(vo);
+	}
+	
+	// 공공데이터 API(강력범죄 발생현황 년도별 삭제처리)
+	@ResponseBody
+	@PostMapping("/dataApi/deleteCrimeCheck")
+	public String deleteCrimeCheckPost(int year) {
+		study2Service.setDeleteCrimeCheckPost(year);
+		
+		return "study2/dataApi/dataApiForm1";
+	}
+	
+	// 공공데이터 API(전국 강력범죄현황)
+	@ResponseBody
+	@PostMapping("/dataApi/dbListCrimeCheck")
+	public List<CrimeVO> dbListCrimeCheckPost(int year) {
+		 return study2Service.setDbListCrimeCheck(year);
+	}
+	
+	// 년도별 + 경찰서 지역별 DB자료 출력처리호출하기
+	@Transactional
+	@PostMapping("/dataApi/dataApiForm1")
+	public String dataApiForm1Post(Model model, int year, String policeZone) {
+		List<CrimeVO> vos = study2Service.getDataApiPoliceForm(year, policeZone);
+		model.addAttribute("vos", vos);
+		model.addAttribute("policeZone", policeZone);	
+		
+		CrimeVO analyzeVO = study2Service.getCrimeAnalyze(year, policeZone);
+		model.addAttribute("year", year);
+		model.addAttribute("analyzeVO", analyzeVO);
+		
+		return "study2/dataApi/dataApiForm1";
+	}
+	
+	// 차트연습 폼 보기
+	@GetMapping("/chart/chartForm")
+	public String chartFormGet(Model model, ChartVO vo,
+		@RequestParam(name="part", defaultValue="barVhart", required=false) String part
+	) {
+		model.addAttribute("part", part);
+		model.addAttribute("vo", vo);
+		
+		return "study2/chart/chartForm";
+	}
+	
+	//차트연습폼 보기2
+	@RequestMapping(value = "/chart/chart2Form", method = RequestMethod.GET)
+	public String chart2FormGet(Model model,
+			@RequestParam(name="part", defaultValue="barVChart", required=false) String part) {
+		model.addAttribute("part", part);
+		return "study2/chart2/chart2Form";
+	}
+	
+	@RequestMapping(value = "/chart/googleChart2", method = RequestMethod.POST)
+	public String googleChart2Post(Model model, ChartVO vo) {
+		//System.out.println("vo : " + vo);
+		model.addAttribute("vo", vo);
+		return "study2/chart2/chart2Form";
+	}
+
 }

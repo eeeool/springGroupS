@@ -222,6 +222,18 @@
     #starForm input[type=radio]:checked ~ label {
       text-shadow: 0 0 0 rgba(250, 200, 0, 0.98);
     }
+    
+    h6 {
+      position: fixed;
+      right: 1rem;
+      bottom: -50px;
+      transition: 0.7s ease;
+    }
+    .on {
+      opacity: 0.8;
+      cursor: pointer;
+      bottom: 0;
+    }
 	</style>
 </head>
 <jsp:include page="/WEB-INF/views/include/nav.jsp" />
@@ -402,7 +414,8 @@
       </div>
     </div>
   </div>
-<p><br/></p>
 <jsp:include page="/WEB-INF/views/include/footer.jsp" />
+<p><br/></p>
+<h6 id="topBtn" class="text-end me-3"><img src="${ctp}/images/arrowTop.gif" title="위로이동"/></h6>
 </body>
 </html>
