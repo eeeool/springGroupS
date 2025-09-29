@@ -13,6 +13,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.spring.springGroupS.dao.Study2DAO;
 import com.spring.springGroupS.vo.CrimeVO;
+import com.spring.springGroupS.vo.KakaoAddressVO;
 import com.spring.springGroupS.vo.TransactionVO;
 
 @Service
@@ -152,6 +153,26 @@ public class Study2ServiceImpl implements Study2Service {
 	@Override
 	public CrimeVO getCrimeAnalyze(int year, String policeZone) {
 		return study2DAO.getCrimeAnalyze(year, policeZone);
+	}
+
+	@Override
+	public KakaoAddressVO getKakaoAddressSearch(String address) {
+		return study2DAO.getKakaoAddressSearch(address);
+	}
+
+	@Override
+	public int setKakaoAddressInput(KakaoAddressVO vo) {
+		return study2DAO.setKakaoAddressInput(vo);
+	}
+
+	@Override
+	public List<KakaoAddressVO> getKakaoAddressList() {
+		return study2DAO.getKakaoAddressList();
+	}
+
+	@Override
+	public int kakaoAddressDeletePost(String address) {
+		return study2DAO.kakaoAddressDeletePost(address);
 	}
 
 }
