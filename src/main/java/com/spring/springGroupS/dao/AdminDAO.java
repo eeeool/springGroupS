@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.spring.springGroupS.vo.ComplaintVO;
+import com.spring.springGroupS.vo.FileVO;
 
 public interface AdminDAO {
 
@@ -26,4 +27,5 @@ public interface AdminDAO {
 
 	int getComplaintTotRecCnt(@Param("part") String part);
 
+	List<FileVO> setFileListCategory(@Param("category") String category);
 }

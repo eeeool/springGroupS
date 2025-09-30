@@ -1,6 +1,7 @@
 package com.spring.springGroupS.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -8,12 +9,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.spring.springGroupS.common.Pagination;
 import com.spring.springGroupS.service.AdminService;
 import com.spring.springGroupS.service.MemberService;
 import com.spring.springGroupS.vo.ComplaintVO;
+import com.spring.springGroupS.vo.FileVO;
 import com.spring.springGroupS.vo.MemberVO;
 import com.spring.springGroupS.vo.PageVO;
 
@@ -127,8 +130,16 @@ public class AdminController {
 		return res;
 	}
 	
-	@GetMapping("adFile")
+	@GetMapping("/ad/adFile")
 	public String adFile() {
-		return "ad/adFile";
+		return "admin/ad/adFile";
+	}
+	
+	@PostMapping("/ad/adFile")
+	@ResponseBody
+	public List<FileVO> adFileListPost(
+		@RequestParam(name = "category", defaultValue = "Guest", required = false) String category
+	) {
+		return adminService.setFileListCategory(category);
 	}
 }

@@ -1,10 +1,8 @@
 package com.spring.springGroupS.vo;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-
 import org.hibernate.validator.constraints.Range;
-
+import javax.validation.constraints.Size;
 import lombok.Data;
 
 @SuppressWarnings("deprecation")
