@@ -6,7 +6,32 @@
 <head>
   <meta charset="UTF-8">
   <jsp:include page="/WEB-INF/views/include/bs5.jsp" />
+  <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>	<!-- 카카오로그인 js파일 -->
   <title>memberLogin.jsp</title>
+  
+  <script>
+  // 카카오 로그인(자바스크립트 앱키 등록)
+  window.Kakao.init("ede6ada917859580feb1c2bdabe42efe");
+  
+  function kakaoLogin() {
+  	window.Kakao.Auth.login({
+  		scope: 'profile_nickname, account_email',
+  		success:function(autoObj) {
+  			console.log(Kakao.Auth.getAccessToken(), "정상 토큰 발급됨...");
+  			
+  			window.Kakao.API.request({
+  				url : '/v2/user/me',
+  				success:function(res) {
+  					const kakao_account = res.kakao_account;
+  					//console.log(kakao_account);
+  					
+  					location.href = "${ctp}/member/kakaoLogin?nickName="+kakao_account.profile.nickname+"&email="+kakao_account.email+"&accessToken="+Kakao.Auth.getAccessToken();
+  				}
+  			});
+  		}
+  	});
+  }
+  </script>
 </head>
 <body>
 <jsp:include page="/WEB-INF/views/include/slide2.jsp" />
@@ -37,6 +62,7 @@
 	    			<input type="checkbox" name="idSave" checked /> 아이디 저장 /
 	    			<a href="memberIdSearch" class="text-decoration-none text-dark link-primary">아이디찾기</a> /
 	    			<a href="javascript:pwdSearch()" class="text-decoration-none text-dark link-primary">비밀번호찾기</a>
+	    			<a href="javascript:kakaoLogin()"><img src="${ctp}/images/kakaoLogin.png" width="145px"/></a>
 	    		</div>
         </td>
       </tr>
