@@ -103,4 +103,9 @@ public class ProjectProvide {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmmss");
 		return sdf.format(date) + "_" + oFileName;
 	}
+
+	public void fileCopyCheck(String oriFilePath, String copyFilePath) {
+		// TODO Auto-generated method stub
+		
+	}
 }
