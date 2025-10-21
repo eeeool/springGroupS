@@ -47,12 +47,12 @@ public class MessageController {
 			model.addAttribute("url", "/user2/userList");
 		}
 		else if(msgFlag.equals("userUpdateOk")) {
-			model.addAttribute("message", "회원 정보를 수정하였습니다.");
-			model.addAttribute("url", "/user2/userUpdate?idx="+idx);
+		    model.addAttribute("message", "회원 정보를 수정하였습니다.");
+		    model.addAttribute("url", "/userUpdate?mid="+mid+"&idx="+idx);
 		}
-		else if(msgFlag.equals("userUpdateOk")) {
-			model.addAttribute("message", "회원 정보 수정 실패~~");
-			model.addAttribute("url", "/user2/userUpdate?idx="+idx);
+		else if(msgFlag.equals("userUpdateNo")) {
+		    model.addAttribute("message", "회원 정보 수정 실패~~");
+		    model.addAttribute("url", "/userUpdate?mid="+mid+"&idx="+idx);
 		}
 		else if(msgFlag.equals("guestInputOk")) {
 			model.addAttribute("message", "방명록에 글이 등록되었습니다.");

@@ -46,7 +46,8 @@
 	<insert id="setBoardReplyInput">
 	  insert into board2Reply values (default,#{replyVO.board2Idx},#{replyVO.ref},#{replyVO.re_step},#{replyVO.re_order},#{replyVO.mid},#{replyVO.nickName},default,#{replyVO.hostIp},#{replyVO.content});
 	</insert>
-
+	
+	
 	
 	<update id="setReadNumPlus">
 	  update board2 set readNum = readNum + 1 where idx = #{idx};
