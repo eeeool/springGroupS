@@ -1,7 +1,12 @@
 package com.spring.springGroupS.controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +22,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.spring.springGroupS.common.ProjectProvide;
 import com.spring.springGroupS.service.Study2Service;
 import com.spring.springGroupS.vo.ChartVO;
 import com.spring.springGroupS.vo.CrimeVO;
 import com.spring.springGroupS.vo.KakaoAddressVO;
+import com.spring.springGroupS.vo.QrCodeVO;
 import com.spring.springGroupS.vo.TransactionVO;
+
+import net.coobird.thumbnailator.Thumbnailator;
 
 @Controller
 @RequestMapping("/study2")
@@ -30,6 +40,9 @@ public class Study2Controller {
 	
 	@Autowired
 	Study2Service study2Service;
+	
+	@Autowired
+	ProjectProvide projectProvide;
 	
 	@GetMapping("/random/randomForm")
 	public String randomFormGet() {
@@ -91,7 +104,7 @@ public class Study2Controller {
 			}
 			return temp;
 		}
-		else {
+		else {	
 			int res = study2Service.setValidatorFormOk(vo);
 			return "회원가입 완료";
 		}		
@@ -281,4 +294,180 @@ public class Study2Controller {
 		return "study2/kakao/kakaoEx4";
 	}
 	
+	//날씨 API 폼
+	@GetMapping("/weather/weatherForm")
+	public String weatherFormGet(Model model) {
+		List<KakaoAddressVO> jiyukVos = study2Service.getKakaoAddressList();
+		model.addAttribute("jiyukVos", jiyukVos);
+		return "study2/weather/weatherForm";
+	}
+	
+	//QR Code 연습 폼
+	@GetMapping("/qrCode/qrCodeForm")
+	public String qrCodeCreateGet() {
+		return "study2/qrCode/qrCodeForm";
+	}
+	
+	//QR Code 생성하기
+	@ResponseBody
+	@PostMapping("/qrCode/qrCodeCreate")
+	public String qrCodeCreatePost(HttpServletRequest request, HttpSession session, QrCodeVO vo) {
+		String realPath = request.getSession().getServletContext().getRealPath("/resources/data/qrCode/");
+		vo.setFlag(0);
+		vo.setMid((String) session.getAttribute("sMid"));
+		return study2Service.setQrCodeCreate(realPath, vo);
+	}
+	
+	//QR Code 개인정보 QR 코드로 생성하기 폼보기
+	@GetMapping("/qrCode/qrCodeEx1")
+	public String qrCodeEx1Get() {
+		return "study2/qrCode/qrCodeEx1";
+	}
+	
+	// QR Code 개인정보 QR 코드 생성
+	@ResponseBody
+	@PostMapping("/qrCode/qrCodeEx1")
+	public String qrCodeEx1Post(HttpServletRequest request, QrCodeVO vo) {
+		String realPath = request.getSession().getServletContext().getRealPath("/resources/data/qrCode/");
+		vo.setFlag(1);
+		return study2Service.setQrCodeCreate(realPath, vo);
+	}
+	
+	//QR Code 소개사이트 주소 생성하기 폼보기
+	@GetMapping("/qrCode/qrCodeEx2")
+	public String qrCodeEx2Get() {
+		return "study2/qrCode/qrCodeEx2";
+	}
+	
+	// QR Code 소개사이트 주소 생성하기
+	@ResponseBody
+	@PostMapping("/qrCode/qrCodeEx2")
+	public String qrCodeEx2Post(HttpServletRequest request, QrCodeVO vo, HttpSession session) {
+		String realPath = request.getSession().getServletContext().getRealPath("/resources/data/qrCode/");
+		vo.setFlag(2);
+		vo.setMid((String) session.getAttribute("sMid"));
+		return study2Service.setQrCodeCreate(realPath, vo);
+	}
+	
+	//QR Code 티켓예매 폼보기
+	@GetMapping("/qrCode/qrCodeEx3")
+	public String qrCodeEx3Get() {
+		return "study2/qrCode/qrCodeEx3";
+	}
+	
+	//QR Code 티켓예매 생성하기
+	@ResponseBody
+	@PostMapping("/qrCode/qrCodeEx3")
+	public String qrCodeEx3Post(HttpServletRequest request, QrCodeVO vo) {
+		String realPath = request.getSession().getServletContext().getRealPath("/resources/data/qrCode/");
+		vo.setFlag(3);
+		return study2Service.setQrCodeCreate(realPath, vo);
+	}
+	
+	//QR Code 티켓예매 폼보기(DB저장 검색)
+	@GetMapping("/qrCode/qrCodeEx4")
+	public String qrCodeEx4Get() {
+		return "study2/qrCode/qrCodeEx4";
+	}
+	
+	// QR Code 티켓예매 생성하기(DB저장 검색)
+	@ResponseBody
+	@PostMapping(value = "/qrCode/qrCodeEx4")
+	public String qrCodeEx4Post(HttpServletRequest request, QrCodeVO vo) {
+		String realPath = request.getSession().getServletContext().getRealPath("/resources/data/qrCode/");
+		vo.setFlag(4);
+		return study2Service.setQrCodeCreate(realPath, vo);
+	}
+	
+	//QR Code명 검색하기(DB저장 검색)
+	@ResponseBody
+	@RequestMapping(value = "/qrCode/qrCodeSearch", method = RequestMethod.POST)
+	public QrCodeVO qrCodeSearchPost(String qrCode) {
+		return study2Service.getQrCodeSearch(qrCode);
+	}
+	
+	//썸네일 연습 폼보기
+	@RequestMapping(value = "/thumbnail/thumbnailForm", method = RequestMethod.GET)
+	public String thumbnailFormGet() {
+		return "study2/thumbnail/thumbnailForm";
+	}
+	
+	//썸네일 연습 사진처리
+	@ResponseBody
+	@PostMapping("/thumbnail/thumbnailForm")
+	public String thumbnailFormPost(MultipartFile file, HttpSession session, HttpServletRequest request) {
+		String mid = (String) session.getAttribute("sMid");
+		String realPath = request.getSession().getServletContext().getRealPath("/resources/data/thumbnail/");
+
+		String res = "";
+		try {
+			String sFileName = projectProvide.saveFileName(mid) + "_" + file.getOriginalFilename();
+			
+			File realFileName = new File(realPath + sFileName);
+			file.transferTo(realFileName);  // 원본 이미지 파일 저장
+			
+			String thumbnailSaveName = realPath + "s_" + sFileName;
+			File thumbnailFile = new File(thumbnailSaveName);
+			
+			int width = 160;
+			int height = 160 * 3 / 4;	// 가로:세로 = 4:3
+			Thumbnailator.createThumbnail(realFileName, thumbnailFile, width, height);  // 썸네일 이미지 파일 저장
+			
+			res = sFileName;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return res;
+	}
+	
+	// 썸네일 전체 리스트 이미지 보기
+	@RequestMapping(value = "/thumbnail/thumbnailResult", method = RequestMethod.GET)
+	public String thumbnailResultGet(Model model, HttpServletRequest request) {
+		String realPath = request.getSession().getServletContext().getRealPath("/resources/data/thumbnail/");
+		String[] files = new File(realPath).list();
+		
+		model.addAttribute("files", files);
+		model.addAttribute("fileCount", (files.length / 2));
+		
+		return "study2/thumbnail/thumbnailResult";
+	}
+	
+	//썸네일 이미지 삭제처리(1개파일삭제)
+	@ResponseBody
+	@RequestMapping(value = "/thumbnail/thumbnailDelete", method = RequestMethod.POST)
+	public int thumbDeletePost(HttpServletRequest request, String file) {
+		String realPath = request.getSession().getServletContext().getRealPath("/resources/data/thumbnail/");
+		
+		int res = 0;
+		File sName = new File(realPath + file);
+		File fName = new File(realPath + file.substring(2));
+		if(fName.exists()) {
+			sName.delete();
+			fName.delete();
+			res = 1;
+		}
+		return res;
+	}
+	
+  // 썸네일 이미지 삭제처리(전체파일삭제)
+	@ResponseBody
+	@RequestMapping(value = "/thumbnail/thumbnailDeleteAll", method = RequestMethod.POST)
+	public int thumbnailDeleteAllPost(HttpServletRequest request, String file) {
+		String realPath = request.getSession().getServletContext().getRealPath("/resources/data/thumbnail/");
+		
+		int res = 0;
+		File targetFolder = new File(realPath);
+		if(!targetFolder.exists()) return res;
+		
+		File[] files = targetFolder.listFiles();
+		
+		if(files.length != 0) {
+			for(File f : files) {
+				if(!f.isDirectory()) f.delete();
+			}
+			res = 1;
+		}
+		return res;
+	}
 }

@@ -30,7 +30,7 @@
     	let regTel = /\d{2,3}-\d{3,4}-\d{4}$/g;
     	
     	// 검사를 끝내고 필요한 내역들을 변수에 담아 회원가입처리한다.
-    	let pwd = myform.pwd.value.trim();
+    	// let pwd = myform.pwd.value.trim();
     	let nickName = myform.nickName.value;
     	let name = myform.name.value;
     	

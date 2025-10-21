@@ -39,7 +39,10 @@
 		select * from kakaoAddress order by address;
 	</select>
 
-
+	<select id="getQrCodeSearch" resultType="com.spring.springGroupS.vo.QrCodeVO">
+		select * from qrCode where qrCodeName = #{qrCode};
+	</select>
+	
 
   <insert id="setValidatorFormOk">
     insert into user values (default, #{vo.mid}, #{vo.name}, #{vo.age}, #{vo.address});
@@ -66,6 +69,10 @@
     insert into kakaoAddress values (default,#{vo.address},#{vo.latitude},#{vo.longitude});
   </insert>
   
+  <insert id="setQrCodeCreate">
+	  insert into qrCode values (default,#{vo.mid},#{vo.name},#{vo.email},#{vo.movieName},#{vo.movieDate},#{vo.movieTime},#{vo.movieAdult},#{vo.movieChild},#{vo.publishDate},#{vo.qrCodeName});
+	</insert>
+	
   
   <delete id="setValidatorDeleteOk">
     delete from user where idx = #{idx};

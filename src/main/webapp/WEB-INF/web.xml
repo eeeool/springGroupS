@@ -45,5 +45,25 @@
 	<filter-mapping>
 		<filter-name>encoding</filter-name>
 		<url-pattern>/*</url-pattern>
+		
+		<!-- 에러처리(400/404/405/500) -->
+		<error-page>
+			<error-code>400</error-code>
+			<location>/error/error400</location>
+		</error-page>
+		<error-page>
+			<error-code>404</error-code>
+			<location>/error/error404</location>
+		</error-page>
+		<error-page>
+			<exception-type>java.lang.NullPointerException</exception-type>
+			<location>/error/errorNullPointer</location>
+		</error-page>
+		
+		<error-page>
+			<error-code>java.lang.NumberFormatException</error-code>
+			<location>/error/error500</location>
+		</error-page>
 	</filter-mapping>
 </web-app>
+

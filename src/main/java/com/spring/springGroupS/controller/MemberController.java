@@ -338,7 +338,7 @@ public class MemberController {
 	public int memberEmailCheckOkPost(String checkKey, HttpSession session) {
 		String emailKey = (String) session.getAttribute("sEmailKey");
 		if(checkKey.equals(emailKey)) {
-			session.removeAttribute("sEmeilKey");
+			session.removeAttribute("sEmailKey");
 			return 1;
 		}
 		return 0;

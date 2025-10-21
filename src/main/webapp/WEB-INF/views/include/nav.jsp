@@ -53,6 +53,8 @@
 		        <a href="${ctp}/study1/mail/mailForm" class="w3-bar-item w3-button">메일 연습</a>
 		        <a href="${ctp}/study1/fileUpload/fileUploadForm" class="w3-bar-item w3-button">파일 업로드 연습</a>
 		        <a href="${ctp}/study1/sweetAlert/sweetAlertForm" class="w3-bar-item w3-button">SweetAlert 연습</a>
+		        <a href="${ctp}/study1/rangeSlider/rangeSlider" class="w3-bar-item w3-button">RangeSlider</a>
+		        <a href="${ctp}/error/errorForm" class="w3-bar-item w3-button">errorPage연습</a>
 		      </div>
 		    </div>
 		    <div class="w3-dropdown-hover w3-hide-small">
@@ -66,6 +68,10 @@
 		        <a href="${ctp}/study2/chart/chartForm" class="w3-bar-item w3-button">차트 연습1</a>
 		        <a href="${ctp}/study2/chart/chart2Form" class="w3-bar-item w3-button">차트 연습2</a>
 		        <a href="${ctp}/study2/kakao/kakaomap" class="w3-bar-item w3-button">카카오 맵</a>
+		        <a href="${ctp}/study2/weather/weatherForm" class="w3-bar-item w3-button">날씨정보</a>
+		        <a href="${ctp}/study2/qrCode/qrCodeForm" class="w3-bar-item w3-button">QR코드</a>
+		        <a href="${ctp}/study2/thumbnail/thumbnailForm" class="w3-bar-item w3-button">썸네일연습</a>
+		        <a href="${ctp}/inquiry/inquiryList" class="w3-bar-item w3-button">1:1문의</a>
 		      </div>
 		    </div>
 	    </c:if>
@@ -75,6 +81,7 @@
 	      	<c:if test="${sLevel < 3}">
 		        <a href="${ctp}/schedule/schedule" class="w3-bar-item w3-button">일정관리</a>
 		        <a href="${ctp}/study1/aop/aopMenu" class="w3-bar-item w3-button">웹 메세지</a>
+		        <a href="${ctp}/webSocket/webSocket" class="w3-bar-item w3-button">웹소켓 채팅</a>
 		        <a href="${ctp}/study1/xml/xmlMenu" class="w3-bar-item w3-button">Photo Gallery</a>
 		        <a href="${ctp}/member/memberList" class="w3-bar-item w3-button">회원리스트</a>
 	        </c:if>
