@@ -3,7 +3,7 @@
 <mapper namespace="com.spring.springGroupS.dao.BoardDAO">
 
 	<select id="getBoardList" resultType="com.spring.springGroupS.vo.BoardVO">
-		select *,
+			select *,
 		  timestampdiff(hour, wDate, now()) as hour_diff,
 		  datediff(now(), wDate) as date_diff,
 		  (select count(*) from board2Reply where board2Idx=b.idx) as replyCnt

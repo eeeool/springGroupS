@@ -28,6 +28,7 @@
 	    <exclude-mapping path="/member/memberEmailCheckNo"/>
  	    <exclude-mapping path="/member/memberIdSearch"/>
 	    <exclude-mapping path="/member/memberPwdSearch"/>
+	    
 	    <beans:ref bean="level3Interceptor" />
 	  </interceptor>
 	  <interceptor>
@@ -36,6 +37,7 @@
 	    <mapping path="/study1/**"/>
 	    <mapping path="/study2/**"/>
 	    <mapping path="/schedule/**"/>
+	    <mapping path="/webSocket/**"/>
 	    <mapping path="/pds/pdsList"/>
 	    <mapping path="/pds/pdsDownload"/>
 	    <exclude-mapping path="/board/boardList"/>
