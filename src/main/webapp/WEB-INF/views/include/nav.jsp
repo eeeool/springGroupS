@@ -73,6 +73,7 @@
 		        <a href="${ctp}/study2/qrCode/qrCodeForm" class="w3-bar-item w3-button">QR코드</a>
 		        <a href="${ctp}/study2/thumbnail/thumbnailForm" class="w3-bar-item w3-button">썸네일연습</a>
 		        <a href="${ctp}/inquiry/inquiryList" class="w3-bar-item w3-button">1:1문의</a>
+		        <a href="${ctp}/study2/crawling/jsoup" class="w3-bar-item w3-button">크롤링 연습</a>
 		      </div>
 		    </div>
 	    </c:if>
@@ -85,6 +86,7 @@
 		        <a href="${ctp}/webSocket/webSocket" class="w3-bar-item w3-button">웹소켓 채팅</a>
 		        <a href="${ctp}/study1/xml/xmlMenu" class="w3-bar-item w3-button">Photo Gallery</a>
 		        <a href="${ctp}/member/memberList" class="w3-bar-item w3-button">회원리스트</a>
+		        <a href="#" class="w3-bar-item w3-button">스케줄러 연습(자동)</a>
 	        </c:if>
 	        <a href="${ctp}/member/memberPwdCheck/p" class="w3-bar-item w3-button">비밀번호 변경</a>
 	        <a href="${ctp}/member/memberPwdCheck/u" class="w3-bar-item w3-button">회원정보 수정</a>
