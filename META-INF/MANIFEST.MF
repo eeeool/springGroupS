@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: springGroupS
+Bundle-SymbolicName: springGroupS
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Automatic-Module-Name: springGroupS
+Export-Package: com.spring.springGroupS.aop,
+ com.spring.springGroupS.common,
+ com.spring.springGroupS.controller,
+ com.spring.springGroupS.dao,
+ com.spring.springGroupS.interceptor,
+ com.spring.springGroupS.service,
+ com.spring.springGroupS.vo
