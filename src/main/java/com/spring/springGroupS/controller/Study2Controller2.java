@@ -2,7 +2,6 @@ package com.spring.springGroupS.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +17,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -41,12 +39,11 @@ import com.spring.springGroupS.vo.KakaoAddressVO;
 import com.spring.springGroupS.vo.QrCodeVO;
 import com.spring.springGroupS.vo.TransactionVO;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
 import net.coobird.thumbnailator.Thumbnailator;
 
-@Controller
+//@Controller
 @RequestMapping("/study2")
-public class Study2Controller {
+public class Study2Controller2 {
 	
 	@Autowired
 	Study2Service study2Service;
@@ -652,12 +649,12 @@ public class Study2Controller {
 		return vos;
 	}
 	
-	// 크롤링연습(selenium)
+	//크롤링연습(selenium)
 	@RequestMapping(value = "/crawling/selenium", method = RequestMethod.GET)
 	public String seleniumGet() {
 		return "study2/crawling/selenium";
 	}
-
+	
 	// 크롤링연습 처리(selenium) - google 이미지 검색
 	@SuppressWarnings("unused")
 	@ResponseBody
@@ -665,138 +662,8 @@ public class Study2Controller {
 	public List<HashMap<String, Object>> googleImageSearchPost(HttpServletRequest request, String search) {
 		List<HashMap<String, Object>> vos = new ArrayList<>();
 		
-		try {
-			// 크롬브라우저를 사용하기위한 드라이버를 연결한다.
-			WebDriver driver = new ChromeDriver();
-			
-			WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(3));
-			
-			WebDriverManager.chromedriver().setup();
-			
-			driver.get("https://www.google.com/imghp?hl=ko&tab=ri&authuser=0&ogbl");
-			
-			
-			WebElement btnMore = driver.findElement(By.name("q"));
-			
-			btnMore.sendKeys(search);
-			
-			btnMore.sendKeys(Keys.ENTER);
-			
-			JavascriptExecutor js = (JavascriptExecutor) driver;
-      for (int i = 0; i < 5; i++) {
-        js.executeScript("window.scrollBy(0, 1000)");
-        Thread.sleep(1000);
-      }
-      
-      List<WebElement> imageElements = driver.findElements(By.cssSelector("img.YQ4gaf"));
-      System.out.println("찾은 이미지 개수: " + imageElements.size());
-	
-      int i = 0;
-      for (WebElement img : imageElements) {
-      	String src = img.getAttribute("src");
-        String dataSrc = img.getAttribute("data-src");
-        String srcset = img.getAttribute("srcset");
-        String alt = img.getAttribute("alt");
-
-        String imageUrl = null;
-        if (dataSrc != null && dataSrc.startsWith("https")) {
-            imageUrl = dataSrc;
-        } else if (src != null && src.startsWith("https")) {
-            imageUrl = src;
-        } else if (srcset != null && srcset.contains("https")) {
-            imageUrl = srcset.split(" ")[0];
-        }
-
-        if (imageUrl != null) {
-            HashMap<String, Object> map = new HashMap<>();
-            map.put("index", i++);
-            map.put("fileName", alt);
-            map.put("imageUrl", imageUrl);
-            vos.add(map);
-
-            System.out.println(i + " : " + alt + " => " + imageUrl);
-        }
-      }
-      
-      driver.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		
 		return vos;
 	}
 
-//크롤링연습 처리(selenium) - SRT 열차 조회하기
-	@SuppressWarnings("unused")
-	@ResponseBody
-	@RequestMapping(value = "/crawling/train", method = RequestMethod.POST)
-	public List<HashMap<String, Object>> trainPost(HttpServletRequest request, String stationStart, String stationStop) {
-		List<HashMap<String, Object>> array = new ArrayList<HashMap<String,Object>>();
-		try {
-			WebDriver driver = new ChromeDriver();
-			
-			WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-     WebDriverManager.chromedriver().setup();			
-			
-			driver.get("http://srtplay.com/train/schedule");
-
-			WebElement btnMore = driver.findElement(By.xpath("//*[@id=\"station-start\"]/span"));
-			btnMore.click();
-     try { Thread.sleep(2000);} catch (InterruptedException e) {}
-     
-     btnMore = driver.findElement(By.xpath("//*[@id=\"station-pos-input\"]"));
-     btnMore.sendKeys(stationStart);
-     btnMore = driver.findElement(By.xpath("//*[@id=\"stationListArea\"]/li/label/div/div[2]"));
-     btnMore.click();
-     btnMore = driver.findElement(By.xpath("//*[@id=\"stationDiv\"]/div/div[3]/div/button"));
-     btnMore.click();
-     try { Thread.sleep(2000);} catch (InterruptedException e) {}
-     
-     btnMore = driver.findElement(By.xpath("//*[@id=\"station-arrive\"]/span"));
-     btnMore.click();
-     try { Thread.sleep(2000);} catch (InterruptedException e) {}
-     btnMore = driver.findElement(By.id("station-pos-input"));
-     
-     btnMore.sendKeys(stationStop);
-     btnMore = driver.findElement(By.xpath("//*[@id=\"stationListArea\"]/li/label/div/div[2]"));
-     btnMore.click();
-     btnMore = driver.findElement(By.xpath("//*[@id=\"stationDiv\"]/div/div[3]/div/button"));
-     btnMore.click();
-     try { Thread.sleep(2000);} catch (InterruptedException e) {}
-
-     btnMore = driver.findElement(By.xpath("//*[@id=\"sr-train-schedule-btn\"]/div/button"));
-     btnMore.click();
-     try { Thread.sleep(2000);} catch (InterruptedException e) {}
-     
-     List<WebElement> timeElements = driver.findElements(By.cssSelector(".table-body ul.time-list li"));
-			
-     HashMap<String, Object> map = null;
-     
-			for(WebElement element : timeElements){
-				map = new HashMap<String, Object>();
-				String train=element.findElement(By.className("train")).getText();
-				String start=element.findElement(By.className("start")).getText();
-				String arrive=element.findElement(By.className("arrive")).getText();
-				String time=element.findElement(By.className("time")).getText();
-				String price=element.findElement(By.className("price")).getText();
-				map.put("train", train);
-				map.put("start", start);
-				map.put("arrive", arrive);
-				map.put("time", time);
-				map.put("price", price);
-				array.add(map);
-			}
-			
-     btnMore = driver.findElement(By.xpath("//*[@id=\"scheduleDiv\"]/div[2]/div/ul/li[1]/div/div[5]/button"));
-     //System.out.println("요금 조회버튼클릭");
-     btnMore.click();
-     try { Thread.sleep(2000);} catch (InterruptedException e) {}
-     
-			
-     driver.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return array;
-	}
-	
 }

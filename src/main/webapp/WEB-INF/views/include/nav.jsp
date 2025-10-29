@@ -72,7 +72,8 @@
 		        <a href="${ctp}/study2/qrCode/qrCodeForm" class="w3-bar-item w3-button">QR코드</a>
 		        <a href="${ctp}/study2/thumbnail/thumbnailForm" class="w3-bar-item w3-button">썸네일연습</a>
 		        <a href="${ctp}/inquiry/inquiryList" class="w3-bar-item w3-button">1:1문의</a>
-		        <a href="${ctp}/study2/crawling/jsoup" class="w3-bar-item w3-button">크롤링 연습</a>
+		        <a href="${ctp}/study2/crawling/jsoup" class="w3-bar-item w3-button">크롤링 연습1(Jsoup)</a>
+		        <a href="${ctp}/study2/crawling/selenium" class="w3-bar-item w3-button">크롤링 연습2(Selenium)</a>
 		      </div>
 		    </div>
 	    </c:if>
