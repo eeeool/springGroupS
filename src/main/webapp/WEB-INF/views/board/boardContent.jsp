@@ -300,7 +300,11 @@
 	 <table class="table table-borderless m-0 p-0">
 	   <tr>
 	     <td class="text-start">
-	       <c:if test="${boardFlag == 'search'}"><input type="button" value="돌아가기" onclick="location.href='boardSearchList?search=${search}&searchString=${searchString}';" class="btn btn-success" /></c:if>
+	       <c:if test="${boardFlag != null && boardFlag eq 'search'}">
+				    <input type="button" value="돌아가기"
+				           onclick="location.href='${ctp}/board/boardSearchList?pag=${pag}&pageSize=${pageSize}&search=${search}&keyword=${keyword}'"
+				           class="btn btn-success btn-sm" />
+					</c:if>
 	       <c:if test="${boardFlag != 'search'}"><input type="button" value="돌아가기" onclick="location.href='boardList?pag=${pag}&pageSize=${pageSize}';" class="btn btn-success" /></c:if>
 	     </td>
 	     <td>

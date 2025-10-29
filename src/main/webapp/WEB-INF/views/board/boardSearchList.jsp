@@ -37,7 +37,7 @@
     	<th>번호</th>
     	<th>글제목</th>
     	<th>글쓴이</th>
-    	<th>올린날짜</th>
+    	<th>작성일</th>
     	<th>조회수(♥)</th>
     </tr>
     <c:set var="curScrStartNo" value="${pageVO.curScrStartNo}"/>

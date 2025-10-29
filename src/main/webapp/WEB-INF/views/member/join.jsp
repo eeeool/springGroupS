@@ -19,7 +19,6 @@
 	.container {
 	    max-width: 600px;
 	    margin: 30px auto;
-	    padding: 20px;
 	    background-color: #fff !important;
 	    border-radius: 10px;
 	}
@@ -27,9 +26,9 @@
 	label, span {
 		display: inline-block;
 		width: 80px;
-	    margin-bottom: 5px;
-	    font-weight: bold;
-	    color: #555;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
 	}
 	
 	#address3 {
