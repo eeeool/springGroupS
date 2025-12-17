@@ -1,6 +1,13 @@
 <!-- 이미지 넣기 -->
 ![웹개발]()
 
+<b>
+  <a href="https://github.com/eeeool/springGroupS/blob/master/src/main/java/com/spring/springGroupS/controller/BoardController.java" target="blank">
+    게시판 컨트롤러 보기
+  </a>
+  
+</b>
+
 <!-- 목록기호 넣기 -->
 * 사과
 * 🍎🍏
